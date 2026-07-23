@@ -1,0 +1,36 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Target_Child, MOT Mother
+@ID:	eng|demo|CHI|3;02.15|female|||Target_Child|||
+@ID:	eng|demo|MOT|||||Mother|||
+@Situation:	synthetic demo transcript for ChatLens (free play with toy animals)
+*MOT:	what did you find in the box ?
+*CHI:	I finded a doggie !
+%mor:	pro:sub|I v|find-PAST det:art|a n|doggie .
+*MOT:	you found a doggie ?
+*CHI:	the doggie is running .
+%mor:	det:art|the n|doggie aux|be&3S part|run-PRESP .
+*CHI:	he wants his ball .
+%mor:	pro:sub|he v|want-3S det:poss|his n|ball .
+*MOT:	where is his ball ?
+*CHI:	&-um it's in the box .
+%mor:	pro:per|it~cop|be&3S prep|in det:art|the n|box .
+*CHI:	xxx get it .
+*MOT:	can you get it ?
+*CHI:	<I can> [/] I can get it .
+%mor:	pro:sub|I mod|can v|get pro:per|it .
+*CHI:	doggie's jumping on the bed !
+%mor:	n|doggie~aux|be&3S part|jump-PRESP prep|on det:art|the n|bed .
+*MOT:	he's a very jumpy doggie .
+*CHI:	two doggies jumped .
+%mor:	qn|two n|doggie-PL v|jump-PAST .
+*CHI:	mommy's shoe felled down .
+%mor:	n:prop|mommy-POSS n|shoe v|fall-PAST adv|down .
+*MOT:	oh no , the shoe fell down .
+*CHI:	I want more cookies please .
+%mor:	pro:sub|I v|want qn|more n|cookie-PL co|please .
+*CHI:	don't touch it .
+%mor:	mod|do~neg|not v|touch pro:per|it .
+*MOT:	okay , I won't touch it .
+@End

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%94%8D%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Methods · how ChatLens counts · SLP Tools</title>
+<meta name="description" content="Every counting rule ChatLens uses: which words count, MLU/MLU5/MLT, Brown-style morpheme counting, lexical diversity, and how to add a %mor tier.">
+<style>
+:root{
+  --deep-navy:#08203a; --navy:#0B2D4D; --blue-navy:#16639f; --muted-blue:#2E6F9E;
+  --light-blue:#EAF4FB; --paper:#F6F1E6; --paper-2:#EFE7D6; --line:#E2D9C5;
+  --white:#FFFFFF; --ink:#1b2a3a; --muted:#5d6675; --amber:#dc9329; --teal:#2f7077; --coral:#c0573f;
+  --success:#E9F4EE; --success-border:#2f7d57; --warnb:#ECD2A0;
+  --shadow:0 12px 30px rgba(20,40,70,.06);
+  --radius:14px; --maxw:820px;
+  --disp:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Cascadia Code","Segoe UI Mono",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--disp);line-height:1.6;
+  font-size:clamp(15px,14.5px + .2vw,17px);-webkit-font-smoothing:antialiased;
+  min-height:100vh;display:flex;flex-direction:column}
+h1,h2,h3{font-family:var(--disp);color:var(--navy);line-height:1.2;margin:0 0 .4em;font-weight:600}
+a{color:var(--blue-navy)}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px;border-radius:6px}
+.container{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;background:#fff;padding:8px 12px;border-radius:8px;z-index:9}
+
+.site-header{position:relative;overflow:hidden;background:linear-gradient(160deg,#08203a,#0B2D4D 52%,#103a61);
+  color:#eaf1f8;padding:clamp(34px,5vw,60px) 0 clamp(26px,4vw,42px)}
+.site-header::after{content:"";position:absolute;right:-6%;bottom:-20%;width:min(48vw,460px);height:min(48vw,460px);
+  background:radial-gradient(circle at 50% 50%,rgba(122,208,195,.18),transparent 62%);pointer-events:none}
+.site-header .container{position:relative;z-index:1}
+.site-header .eyebrow{display:inline-block;font-family:var(--mono);font-size:.72rem;letter-spacing:.24em;
+  text-transform:uppercase;color:#7ad0c3;margin:0 0 12px}
+.site-header .eyebrow a{color:#7ad0c3;text-decoration:none}
+.site-header h1{color:#fff;font-size:clamp(1.7rem,1.2rem + 2.2vw,2.4rem);margin:0}
+.site-header .sub{color:#cdd9e6;margin:8px 0 0}
+
+main{padding:clamp(28px,5vw,48px) 0;flex:1}
+section{margin:0 0 30px}
+h2{font-size:1.3rem;border-bottom:2px solid var(--line);padding-bottom:8px;margin-bottom:12px}
+p{margin:0 0 12px}
+.mono{font-family:var(--mono);font-size:.9em;background:var(--paper-2);padding:1px 5px;border-radius:4px}
+.back{display:inline-block;margin-bottom:18px;font-family:var(--mono);font-size:.8rem;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--navy)}
+pre{background:var(--navy);color:#eaf1f8;border-radius:10px;padding:13px 15px;overflow:auto;
+  font-size:.82rem;font-family:var(--mono);line-height:1.5}
+.badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.6rem;font-weight:700;
+  letter-spacing:.04em;text-transform:uppercase;border-radius:999px;padding:2px 8px;vertical-align:middle;border:1px solid}
+.badge.mor{background:var(--success);color:#276646;border-color:var(--success-border)}
+.badge.rules{background:#fbf4e7;color:#8a5a12;border-color:var(--warnb)}
+.badge.tagger{background:#efeaf6;color:#5a4a86;border-color:#b3a6d4}
+.badge.surface{background:var(--light-blue);color:var(--blue-navy);border-color:var(--muted-blue)}
+.formula{font-family:var(--mono);font-size:.82rem;background:var(--white);border:1px solid var(--line);
+  border-radius:8px;padding:8px 12px;margin:8px 0}
+.toc{background:var(--white);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);
+  padding:14px 18px;margin-bottom:26px;font-size:.92rem}
+.toc a{margin-right:14px;white-space:nowrap;display:inline-block}
+
+.site-footer{position:relative;overflow:hidden;background:linear-gradient(160deg,#08203a,#0B2D4D 60%,#103a61);
+  color:#cdd9e6;padding:30px 0 46px;margin-top:auto;font-size:.9rem}
+.site-footer .container{position:relative;z-index:1}
+.site-footer strong{color:#fff}
+.site-footer a{color:#eaf1f8;text-decoration:none}
+.site-footer a:hover{text-decoration:underline}
+.foot-notice{font-size:.82rem;color:#9fb2c6;margin-top:8px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container">
+    <span class="eyebrow"><a href="./">SLP Tools</a> · ChatLens</span>
+    <h1>Methods: how everything is counted</h1>
+    <p class="sub">Every rule ChatLens applies, in plain language, so any number can be checked by hand.</p>
+  </div>
+</header>
+
+<main id="main">
+  <div class="container">
+    <a class="back" href="./chatlens/">&larr; back to ChatLens</a>
+
+    <nav class="toc" aria-label="On this page">
+      <a href="#privacy">Privacy</a> <a href="#reads">What it reads</a> <a href="#badges">Badges</a>
+      <a href="#words">Which words count</a> <a href="#mlu">MLU · MLU5 · MLT</a> <a href="#morphemes">Morphemes</a>
+      <a href="#diversity">Diversity</a> <a href="#mor">Adding %mor</a> <a href="#advanced">Advanced tools</a>
+      <a href="#tagger">Neural tagger</a> <a href="#limits">Limitations</a> <a href="#citing">Citing</a>
+    </nav>
+
+    <section id="privacy">
+      <h2>Privacy</h2>
+      <p>ChatLens runs entirely in your browser. Transcripts are parsed and analyzed on your computer and are
+      <b>never uploaded to any server</b>. After the first visit the page also works offline. The optional
+      neural tagger downloads a model <i>to</i> your browser; your data still never leaves your computer.</p>
+    </section>
+
+    <section id="reads">
+      <h2>What ChatLens reads</h2>
+      <p>CHAT (<span class="mono">.cha</span>) files, or plain <span class="mono">.txt</span> in CLAN format:
+      <span class="mono">@headers</span>, main tiers (<span class="mono">*CHI:</span>), and dependent tiers
+      (<span class="mono">%mor, %gra, %pho</span>, and others). Both %mor styles are supported: classic
+      <b>MOR/POST</b> notation (<span class="mono">n|doggie-PL</span>) and <b>UD-style</b> output from
+      Batchalign2/Stanza. TalkBank is moving to UD; classic MOR remains available for English, French,
+      Spanish, and Mandarin, and gives the finest morphological detail. Gem marks
+      (<span class="mono">@Bg/@Eg</span>) and time-alignment bullets are read too, powering the Sections and
+      Rate tools.</p>
+    </section>
+
+    <section id="badges">
+      <h2>Reading the badges</h2>
+      <p>Every number tells you where it came from.
+      <span class="badge mor">exact · %mor</span> means it was computed from the file's %mor tier and is exact
+      given that tagging. <span class="badge rules">estimated · rules</span> means ChatLens applied its
+      deterministic English word-ending rules (Brown-style) because the file has no %mor tier.
+      <span class="badge tagger">estimated · tagger</span> means a part-of-speech tagger running in your browser
+      made the call. <span class="badge surface">main tier</span> marks measures counted directly from the words
+      spoken; these need no morphology and work for any language.</p>
+    </section>
+
+    <section id="words">
+      <h2>Which words count</h2>
+      <p>Counted words exclude: unintelligible material (<span class="mono">xxx, yyy, www</span>), repeated or
+      revised material (<span class="mono">[/], [//], [///]</span>; the material before the marker), fillers
+      (<span class="mono">&amp;-um</span>), events (<span class="mono">&amp;=laughs</span>), sound fragments
+      (<span class="mono">&amp;+…</span>), omitted words (<span class="mono">0is</span>), pauses, and annotation
+      codes. Replacements like <span class="mono">goggie [: doggie]</span> are analyzed as the intended word.
+      Shortened forms like <span class="mono">(be)cause</span> are completed. Compounds
+      (<span class="mono">peanut_butter</span>) are one word and one morpheme. Contractions
+      (<span class="mono">it's, don't</span>) are one word and two morphemes. The transcript panel shows every
+      one of these decisions: excluded material is faded or struck through, and hovering explains why.</p>
+    </section>
+
+    <section id="mlu">
+      <h2>MLU, MLU5, and MLT</h2>
+      <p>An utterance counts toward MLU when it has at least one countable word. By default, utterances
+      containing unintelligible speech are left out entirely (the stricter, SALT-style convention); a checkbox
+      above the tabs switches to counting their intelligible words instead (the CLAN-style convention).</p>
+      <p class="formula">MLU = total words (or morphemes) ÷ counted utterances</p>
+      <p class="formula">MLU5 = mean length of the 5 longest utterances</p>
+      <p class="formula">MLT = utterances ÷ turns, and words ÷ turns (a turn = a run of back-to-back utterances by the same speaker)</p>
+      <p>The "How is this calculated?" panel on each tab shows these formulas with your file's actual numbers
+      plugged in.</p>
+    </section>
+
+    <section id="morphemes">
+      <h2>Counting morphemes (Brown, 1973)</h2>
+      <p>Inflections count: plural <span class="mono">-s</span>, possessive <span class="mono">'s</span>,
+      third-person <span class="mono">-s</span>, regular past <span class="mono">-ed</span>, progressive
+      <span class="mono">-ing</span>, and contracted parts (<span class="mono">n't, 're, 'll</span>).
+      Irregular pasts and plurals (<span class="mono">went, feet</span>) count as one morpheme. Compounds,
+      proper names, and playful reduplications count as one. Catenatives (<span class="mono">gonna, wanna</span>)
+      count as two. In %mor terms: each base word, each <span class="mono">-suffix</span>, and each
+      <span class="mono">prefix#</span> adds one; fused features (<span class="mono">&amp;PAST, &amp;3S</span>)
+      add nothing; clitics (<span class="mono">~</span>) count separately.</p>
+    </section>
+
+    <section id="diversity">
+      <h2>Lexical diversity</h2>
+      <p><span class="mono">TTR = types ÷ tokens</span> over the speaker's counted words (lower-cased). Because
+      TTR falls as samples grow, ChatLens also reports <b>MATTR</b> (average TTR over a sliding 50-word window)
+      and <b>VOCD-D</b> (random samples of 35 to 50 words, 100 draws, 3 runs, fixed seed, curve fit following
+      Malvern and Richards). Numbers are comparable within one tool, not across tools: CLAN, SALT, and others
+      apply slightly different conventions. ChatLens documents its rules here and labels every number's source.</p>
+    </section>
+
+    <section id="mor">
+      <h2>Adding a %mor tier (recommended for exact morphology)</h2>
+      <p><b>Option A: CLAN MOR</b> (English, French, Spanish, Mandarin; finest detail):</p>
+      <pre>1. Install CLAN and the MOR grammar for your language
+   (talkbank.org &gt; Programs &gt; CLAN; "morgrams" for grammars)
+2. In CLAN's Commands window, set lib to the grammar folder, then:
+     check +epsfile.cha        (validate the CHAT file first)
+     mor  file.cha             (recent CLAN also runs POST + MEGRASP;
+     post file.cha              older versions: run each separately)
+     megrasp file.cha
+3. Fix any words MOR flags as unknown, re-run, and load the
+   tagged file into ChatLens.</pre>
+      <p><b>Option B: Batchalign2</b> (UD/Stanza; about 27 languages):</p>
+      <pre>uv tool install batchalign
+batchalign morphotag --lang=eng  input_dir  output_dir</pre>
+      <p>Both write ordinary %mor/%gra tiers into the CHAT file. ChatLens detects which system produced them.</p>
+    </section>
+
+    <section id="advanced">
+      <h2>Advanced tools</h2>
+      <p><b>Search</b> (like CLAN's KWAL) lists every utterance containing a word, with line numbers.
+      <b>Sections</b> (like GEM) analyzes activities marked with <span class="mono">@Bg/@Eg</span> separately,
+      so contexts can be compared. <b>Rate</b> (like TIMEDUR) uses time-alignment bullets to report speaking
+      time, words per minute, and utterances per minute; line-level times make these approximate. <b>Sounds</b>
+      (like PHONFREQ) tallies IPA consonants and vowels from the %pho tier and counts consonant clusters at word
+      edges (spelling-based estimates when there is no %pho). <b>Check</b> is a light version of CLAN's CHECK:
+      file structure, parser notes, and %mor/%gra alignment against the spoken words.</p>
+    </section>
+
+    <section id="tagger">
+      <h2>In-browser tagger (beta)</h2>
+      <p>The neural tagger loads transformers.js from a CDN and a part-of-speech model from the Hugging Face
+      Hub, then tags locally in your browser. It needs internet for the one-time download and works offline
+      afterwards. Built-in choices: English (BERT, UD part-of-speech tags), French (CamemBERT, French Treebank
+      tags), and Chinese (BERT); you can also paste any compatible token-classification model id. No converted
+      Spanish model exists on the Hub yet; for Spanish, use the %mor route above. Accuracy on child speech has
+      not been validated; treat results as exploratory and prefer %mor for reportable numbers.</p>
+    </section>
+
+    <section id="limits">
+      <h2>Known limitations</h2>
+      <p>Morpheme estimation on plain transcripts is English-only for now (Spanish and French morphology needs a
+      %mor tier, pending validated counting conventions). The contractible/uncontractible copula and auxiliary
+      distinction is approximated as contracted versus not contracted. No dependency-based syntax measures yet
+      (DSS, IPSyn). VOCD may differ slightly from CLAN's implementation. Spelling-based cluster detection is
+      approximate; use %pho for exact clusters. Speaking rates from line-level times include within-line pauses.</p>
+    </section>
+
+    <section id="citing">
+      <h2>Citing</h2>
+      <p>ChatLens (SLP Tools), Mengyang Qiu. Transcripts in CHAT format per MacWhinney (2000),
+      <i>The CHILDES Project</i>. Morphosyntactic tagging: CLAN MOR/POST or Batchalign2 (Liu and MacWhinney),
+      as applicable. Brown, R. (1973), <i>A First Language</i>, for the 14 grammatical morphemes and
+      morpheme-counting conventions. Malvern and Richards (1997) for VOCD-D.</p>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="foot-links"><strong>SLP Tools</strong> &nbsp;&middot;&nbsp; <a href="./chatlens/">ChatLens</a>
+       &nbsp;&middot;&nbsp; <a href="credits.html">Credits &amp; licensing</a>
+       &nbsp;&middot;&nbsp; by <a href="https://mengyang.dev">Mengyang Qiu</a></p>
+    <p class="foot-notice">Source code under the MIT License. Original documentation and sample data
+       &copy; 2026 Mengyang Qiu under CC BY-NC 4.0.</p>
+  </div>
+</footer>
+
+</body>
+</html>

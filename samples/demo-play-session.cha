@@ -5,32 +5,36 @@
 @ID:	eng|demo|CHI|3;02.15|female|||Target_Child|||
 @ID:	eng|demo|MOT|||||Mother|||
 @Situation:	synthetic demo transcript for ChatLens (free play with toy animals)
-*MOT:	what did you find in the box ?
-*CHI:	I finded a doggie !
+@Bg:	animals
+*MOT:	what did you find in the box ? 0_2600
+*CHI:	I finded a doggie ! 2800_5200
 %mor:	pro:sub|I v|find-PAST det:art|a n|doggie .
-*MOT:	you found a doggie ?
-*CHI:	the doggie is running .
+*MOT:	you found a doggie ? 5400_7400
+*CHI:	the doggie is running . 7600_10600
 %mor:	det:art|the n|doggie aux|be&3S part|run-PRESP .
-*CHI:	he wants his ball .
+*CHI:	he wants his ball . 10800_13400
 %mor:	pro:sub|he v|want-3S det:poss|his n|ball .
-*MOT:	where is his ball ?
-*CHI:	&-um it's in the box .
+*MOT:	where is his ball ? 13600_15400
+*CHI:	&-um it's in the box . 15600_19200
 %mor:	pro:per|it~cop|be&3S prep|in det:art|the n|box .
-*CHI:	xxx get it .
-*MOT:	can you get it ?
-*CHI:	<I can> [/] I can get it .
+*CHI:	xxx get it . 19400_21200
+*MOT:	can you get it ? 21400_23200
+*CHI:	<I can> [/] I can get it . 23400_26400
 %mor:	pro:sub|I mod|can v|get pro:per|it .
-*CHI:	doggie's jumping on the bed !
+*CHI:	doggie's jumping on the bed ! 26600_30200
 %mor:	n|doggie~aux|be&3S part|jump-PRESP prep|on det:art|the n|bed .
-*MOT:	he's a very jumpy doggie .
-*CHI:	two doggies jumped .
+*MOT:	he's a very jumpy doggie . 30400_32800
+*CHI:	two doggies jumped . 33000_35600
 %mor:	qn|two n|doggie-PL v|jump-PAST .
-*CHI:	mommy's shoe felled down .
+@Eg:	animals
+*CHI:	mommy's shoe felled down . 35800_39000
 %mor:	n:prop|mommy-POSS n|shoe v|fall-PAST adv|down .
-*MOT:	oh no , the shoe fell down .
-*CHI:	I want more cookies please .
+*MOT:	oh no , the shoe fell down . 39200_41600
+@Bg:	snack
+*CHI:	I want more cookies please . 41800_45000
 %mor:	pro:sub|I v|want qn|more n|cookie-PL co|please .
-*CHI:	don't touch it .
+*CHI:	don't touch it . 45200_47600
 %mor:	mod|do~neg|not v|touch pro:per|it .
-*MOT:	okay , I won't touch it .
+*MOT:	okay , I won't touch it . 47800_50400
+@Eg:	snack
 @End

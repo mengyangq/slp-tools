@@ -86,7 +86,7 @@ pre{background:var(--navy);color:#eaf1f8;border-radius:10px;padding:13px 15px;ov
 
     <nav class="toc" aria-label="On this page">
       <a href="#privacy">Privacy</a> <a href="#reads">What it reads</a> <a href="#badges">Badges</a>
-      <a href="#words">Which words count</a> <a href="#mlu">MLU · MLU5 · MLT</a> <a href="#morphemes">Morphemes</a>
+      <a href="#words">Which words count</a> <a href="#window">Sample window</a> <a href="#mlu">MLU · MLU5 · MLT</a> <a href="#morphemes">Morphemes</a>
       <a href="#diversity">Diversity</a> <a href="#mor">Adding %mor</a> <a href="#advanced">Advanced tools</a>
       <a href="#tagger">Neural tagger</a> <a href="#limits">Limitations</a> <a href="#citing">Citing</a>
     </nav>
@@ -130,8 +130,30 @@ pre{background:var(--navy);color:#eaf1f8;border-radius:10px;padding:13px 15px;ov
       codes. Replacements like <span class="mono">goggie [: doggie]</span> are analyzed as the intended word.
       Shortened forms like <span class="mono">(be)cause</span> are completed. Compounds
       (<span class="mono">peanut_butter</span>) are one word and one morpheme. Contractions
-      (<span class="mono">it's, don't</span>) are one word and two morphemes. The transcript panel shows every
+      (<span class="mono">it's, don't</span>) are one word and two morphemes. Word length is counted in
+      characters of the word as written, apostrophe included (<span class="mono">doggie's</span> = 8),
+      matching CLAN's WDLEN. The transcript panel shows every
       one of these decisions: excluded material is faded or struck through, and hovering explains why.</p>
+    </section>
+
+    <section id="window">
+      <h2>Sample window (skip / read a maximum)</h2>
+      <p>Clinical work often uses a fixed-size sample: skip the warm-up, then analyze the next 50 or 100
+      utterances. The <b>Sample</b> row above the tabs does this: <i>skip first N utterances</i> and
+      <i>read a maximum of M utterances</i>, applied when you press <b>Apply filters</b>.</p>
+      <p>Both numbers are counted <b>per speaker, in speaking order</b>, the same convention as CLAN's
+      <span class="mono">+z</span> switch: skip 10 with a maximum of 50 analyzes each speaker's utterances
+      11–60 (in CLAN: <span class="mono">mlu +t*CHI +z11u-60u file.cha</span>). Counting is over raw
+      utterances as they appear in the file, before any MLU exclusions, so an utterance that is later
+      excluded from MLU (say, one containing <span class="mono">xxx</span>) still uses up one slot of the
+      window. That matches how CLAN reads ranges and keeps the window a property of the transcript, not of
+      any one measure.</p>
+      <p>While a window is applied, <b>everything follows it</b>: every tab, the transcript panel (which
+      shows scissors marks where material was skipped or cut off, and keeps the original line numbers), the
+      Search, Sections, Rate, and Sounds tools, the summary CSV, and the printable report (both note the
+      window). Two things always read the whole file: <b>Check</b> (it validates the file itself) and the
+      <b>tagged-.cha download</b> (so your corrected file is complete). Clearing the filters restores the
+      full transcript.</p>
     </section>
 
     <section id="mlu">

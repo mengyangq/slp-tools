@@ -1,0 +1,118 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Target_Child, MOT Mother
+@ID:	eng|demo|CHI|3;06.10|female|||Target_Child|||
+@ID:	eng|demo|MOT|||||Mother|||
+@Situation:	synthetic long play visit (farm animals, book, snack); created for
+	testing ChatLens's sample window (skip first / read a maximum of utterances)
+*MOT:	hi sweetie , what should we play today ? 0_3840
+*CHI:	I wanna play with the animals . 4080_7500
+*MOT:	okay , let's get the big box . 7740_11160
+*CHI:	&-um can I open it ? 11400_14400
+*MOT:	sure , you can open it . 14640_17640
+*CHI:	look at all the animals ! 17880_20880
+*MOT:	wow , there are so many . 21120_24120
+*CHI:	this one is mine . 24360_26940
+@Bg:	farm
+*MOT:	which animal is that ? 27180_29760
+*CHI:	it's a cow . 30000_32160
+*MOT:	what does the cow say ? 32400_35400
+*CHI:	the cow says moo . 35640_38220
+*MOT:	that's right . 38460_40200
+*CHI:	the cow eated all the grass . 40440_43860
+*MOT:	she ate all the grass ? 44100_47100
+*CHI:	yeah and now she's full . 47340_50340
+*MOT:	where is the baby cow ? 50580_53580
+*CHI:	&-um I can't find him . 53820_56820
+*MOT:	is he hiding in the barn ? 57060_60480
+*CHI:	he goed inside the barn . 60720_63720
+*MOT:	let's open the doors . 63960_66540
+*CHI:	there he is ! 66780_68940
+*CHI:	the baby wants his mommy . 69180_72180
+*MOT:	aw , put them together . 72420_75000
+*CHI:	xxx over there . 75240_77400
+*MOT:	what did you say ? 77640_80220
+*CHI:	I said the horsie jumps over there . 80460_84300
+*MOT:	he's a very good jumper . 84540_87540
+*CHI:	<the sheep> [/] the sheep are stuck . 87780_91620
+*MOT:	oh no , help them out . 91860_94860
+*CHI:	I got two sheeps out . 95100_98100
+*MOT:	good job , they're free now . 98340_101340
+*CHI:	the pig is dirty . 101580_104160
+*MOT:	pigs love the mud . 104400_106980
+*CHI:	he rolled in the mud again ! 107220_110640
+*MOT:	does he need a bath ? 110880_113880
+*CHI:	yeah I'm gonna wash him . 114120_117120
+*CHI:	all clean now . 117360_119520
+*MOT:	the farmer says it's bedtime . 119760_122760
+*CHI:	all the animals go night night . 123000_126420
+*MOT:	can you close the barn ? 126660_129660
+*CHI:	I closed it all by myself . 129900_133320
+@Eg:	farm
+@Bg:	book
+*MOT:	let's read your favorite book now . 133560_136980
+*CHI:	the one about the bunny ! 137220_140220
+*MOT:	yes , the bunny book . 140460_143040
+*CHI:	bunny is going on a trip . 143280_146700
+*MOT:	where is he going ? 146940_149520
+*CHI:	he's going to see his grandma . 149760_153180
+*MOT:	what did he pack ? 153420_156000
+*CHI:	&-um carrots and a hat . 156240_159240
+*MOT:	look at this page . 159480_162060
+*CHI:	it started raining ! 162300_164460
+*MOT:	what happens to bunny ? 164700_167280
+*CHI:	he hided under a big leaf . 167520_170940
+*MOT:	that's a clever bunny . 171180_173760
+*CHI:	the leaf is like a umbrella . 174000_177420
+*MOT:	it is like an umbrella . 177660_180660
+*CHI:	then the sun comed out . 180900_183900
+*MOT:	and what's that in the sky ? 184140_187560
+*CHI:	a rainbow ! 187800_189540
+*MOT:	can you count the colors ? 189780_192780
+*CHI:	one two three four five . 193020_196020
+*MOT:	five colors , nice counting . 196260_198840
+*CHI:	bunny sees grandma's house . 199080_201660
+*MOT:	is grandma happy ? 201900_204060
+*CHI:	she gived him a big hug . 204300_207720
+*MOT:	what do they eat together ? 207960_210960
+*CHI:	they eated carrot soup . 211200_213780
+*CHI:	and then bunny falled asleep . 214020_217020
+*MOT:	that was a long trip . 217260_220260
+*CHI:	read it again please ! 220500_223080
+*MOT:	after snack , okay ? 223320_225480
+@Eg:	book
+@Bg:	snack
+*CHI:	I want crackers and cheese . 225720_228720
+*MOT:	how many crackers do you want ? 228960_232380
+*CHI:	&-um five crackers . 232620_234780
+*MOT:	here you go , five crackers . 235020_238020
+*CHI:	this cheese is yummy . 238260_240840
+*MOT:	do you want some apple too ? 241080_244500
+*CHI:	yes cut it in little pieces . 244740_248160
+*MOT:	okay , little pieces coming up . 248400_251400
+*CHI:	xxx more juice . 251640_253800
+*MOT:	say it one more time ? 254040_257040
+*CHI:	can I have more juice please ? 257280_260700
+*MOT:	of course you can . 260940_263520
+*CHI:	I drinked it all . 263760_266340
+*MOT:	you were very thirsty . 266580_269160
+*CHI:	the crackers go crunch crunch . 269400_272400
+*MOT:	they are very crunchy . 272640_275220
+*CHI:	my tummy is happy now . 275460_278460
+*MOT:	should we clean up the plate ? 278700_282120
+*CHI:	<I can> [/] I can carry it . 282360_286200
+*MOT:	careful , use two hands . 286440_289020
+*CHI:	I didn't drop it ! 289260_291840
+*MOT:	thank you for helping . 292080_294660
+*CHI:	welcome mommy . 294900_296640
+*MOT:	do you want one more piece ? 296880_300300
+*CHI:	no I'm all done . 300540_303120
+@Eg:	snack
+*MOT:	what was your favorite part today ? 303360_306780
+*CHI:	&-um playing with the sheeps . 307020_310020
+*MOT:	the sheep were pretty funny . 310260_313260
+*CHI:	can we play again tomorrow ? 313500_316500
+*MOT:	we can play again tomorrow . 316740_319740
+*CHI:	yay I love you mommy . 319980_322980
+@End

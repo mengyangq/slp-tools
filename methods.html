@@ -149,11 +149,16 @@ pre{background:var(--navy);color:#eaf1f8;border-radius:10px;padding:13px 15px;ov
       window. That matches how CLAN reads ranges and keeps the window a property of the transcript, not of
       any one measure.</p>
       <p>While a window is applied, <b>everything follows it</b>: every tab, the transcript panel (which
-      shows scissors marks where material was skipped or cut off, and keeps the original line numbers), the
-      Search, Sections, Rate, and Sounds tools, the summary CSV, and the printable report (both note the
-      window). Two things always read the whole file: <b>Check</b> (it validates the file itself) and the
+      shows scissors marks where the selected speaker's material was skipped or cut off), the Search,
+      Sections, Rate, and Sounds tools, the summary CSV, and the printable report (both note the window).
+      Two things always read the whole file: <b>Check</b> (it validates the file itself) and the
       <b>tagged-.cha download</b> (so your corrected file is complete). Clearing the filters restores the
       full transcript.</p>
+      <p><b>Numbering.</b> The transcript panel and Search number <i>utterances</i>: 1 is the first
+      utterance in the file, headers and dependent tiers are not counted, and the numbering does not change
+      when a window is applied (a window that skips material simply starts at a higher number, marked with
+      scissors). Hovering a number shows the raw <i>file line</i> as well; file lines are what the Check
+      tool reports, for fixing the file in CLAN or a text editor.</p>
     </section>
 
     <section id="mlu">

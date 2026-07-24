@@ -41,19 +41,19 @@ main{padding:clamp(28px,5vw,48px) 0}
 section{margin:0 0 34px}
 h2{font-size:1.35rem;border-bottom:2px solid var(--line);padding-bottom:8px;margin-bottom:14px}
 h3{font-size:1.02rem;margin:18px 0 6px;color:var(--blue-navy)}
+h3.tool-h{font-size:1.18rem;color:var(--navy);margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+h4{font-family:var(--disp);font-size:.95rem;font-weight:600;margin:18px 0 6px;color:var(--blue-navy)}
 p{margin:0 0 12px}
 .lic-card{background:var(--white);border:1px solid var(--line);border-left:4px solid var(--teal);
   border-radius:12px;padding:16px 20px;box-shadow:var(--shadow);margin-bottom:14px}
-.lic-card.code{border-left-color:var(--blue-navy)}
-.lic-card.content{border-left-color:#7ad0c3}
 .lic-card h3{margin-top:0}
 .lic-card .tag{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;
   color:var(--muted);display:block;margin-bottom:4px}
 ul{margin:0 0 12px;padding-left:22px}
 li{margin:0 0 8px}
 .mono{font-family:var(--mono);font-size:.9em}
-.back{display:inline-block;margin-bottom:18px;font-family:var(--mono);font-size:.8rem;color:#cdd9e6;text-decoration:none}
-.back:hover{color:#fff}
+.back{display:inline-block;margin-bottom:18px;font-family:var(--mono);font-size:.8rem;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--navy)}
 table.tl{border-collapse:collapse;width:100%;font-size:.92rem;background:var(--white);border:1px solid var(--line);
   border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
 table.tl th,table.tl td{text-align:left;padding:9px 14px;border-bottom:1px solid var(--line);vertical-align:top}
@@ -85,26 +85,28 @@ table.tl td.lib{font-family:var(--mono);white-space:nowrap}
   <div class="container">
     <a class="back" href="./">&larr; back to SLP Tools</a>
 
-    <section>
+    <section id="licensing">
       <h2>Licensing</h2>
-      <p>SLP Tools separates the software from the written material, so each can be reused on its own terms.</p>
+      <p>These terms cover <b>all of SLP Tools</b>: the site, ChatLens, and any tool added later. The software is
+         separated from the written material, so each can be reused on its own terms. Tool-specific credits
+         (inspirations, libraries, references) follow in the next section.</p>
 
-      <div class="lic-card code">
+      <div class="lic-card">
         <span class="tag">Source code</span>
         <h3>MIT License</h3>
-        <p>All source code in this project (the ChatLens application, the <span class="mono">chat-core</span>
+        <p>All source code in this project (the tool applications, the <span class="mono">chat-core</span>
            analysis library, and the site) is licensed under the
            <a href="https://opensource.org/licenses/MIT">MIT License</a>. You may use, modify, and redistribute it,
            including commercially, provided the copyright notice is retained. The full text is in the
            <span class="mono">LICENSE</span> file in the repository.</p>
       </div>
 
-      <div class="lic-card content">
+      <div class="lic-card">
         <span class="tag">Original documentation &amp; sample data</span>
         <h3>CC BY-NC 4.0</h3>
-        <p>Except where otherwise noted, original instructional content written for this project (the Methods
-           documentation, in-app explanations, and the synthetic sample transcripts) &copy; 2026 Mengyang Qiu is
-           licensed under
+        <p>Except where otherwise noted, original instructional content written for this project (tool
+           documentation such as ChatLens's Methods page, in-app explanations, and the synthetic sample data)
+           &copy; 2026 Mengyang Qiu is licensed under
            <a href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0
            International</a>. You may share and adapt it for non-commercial purposes with attribution.</p>
       </div>
@@ -112,45 +114,44 @@ table.tl td.lib{font-family:var(--mono);white-space:nowrap}
       <div class="lic-card">
         <span class="tag">Third-party</span>
         <h3>Libraries and standards</h3>
-        <p>Third-party libraries retain their own licenses (listed below). The CHAT transcription format and the
-           CLAN/MOR and Batchalign tools are the work of the
-           <a href="https://talkbank.org/">TalkBank</a> project and are referenced, not redistributed, here.</p>
-      </div>
-    </section>
-
-    <section>
-      <h2>Inspiration</h2>
-      <div class="lic-card">
-        <span class="tag">Prior work</span>
-        <h3>QuidiVidi</h3>
-        <p>ChatLens was inspired by <a href="https://picardy-indexing.ca/quidi/">QuidiVidi</a>
-           (Picardy Indexing), which showed that CHAT/CLAN transcript analysis can be made approachable for
-           people newer to corpus methods or less comfortable with command-line tools. ChatLens shares that
-           goal and takes a different route: a web app that runs in the browser rather than installed
-           software. It is an independent implementation with no shared code; QuidiVidi is distributed under
-           <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</p>
+        <p>Third-party libraries retain their own licenses; each tool lists the libraries it uses in its credits
+           below. The project is built with <span class="mono">Vite</span> and <span class="mono">TypeScript</span>
+           (both MIT) and tested with <span class="mono">Vitest</span>; these are development dependencies and are
+           not part of the deployed site.</p>
       </div>
     </section>
 
     <section>
       <h2>What runs in your browser</h2>
       <p>SLP Tools is a set of static pages. Everything is computed on your own device; no transcript, file, or
-         result is uploaded to any server. The one optional exception is the beta multilingual tagger in ChatLens,
-         which downloads a language model to your browser from a public CDN when you choose to use it; even then,
-         your transcript is tagged locally and never sent anywhere.</p>
+         result is uploaded to any server. If a tool has any optional exception (such as downloading a language
+         model on request), it is called out in that tool's credits below.</p>
     </section>
 
-    <section>
-      <h2>Third-party notices</h2>
-      <h3>Bundled with the site</h3>
+    <section id="credits">
+      <h2>Credits</h2>
+      <p>Credits are listed per tool.</p>
+
+      <h3 class="tool-h">ChatLens — language sample analysis</h3>
+
+      <h4>Inspiration</h4>
+      <p>ChatLens was inspired by <a href="https://picardy-indexing.ca/quidi/">QuidiVidi</a>
+         (Picardy Indexing), which aims to make CHAT/CLAN transcript analysis approachable for people newer
+         to corpus methods or less comfortable with command-line tools. ChatLens shares that intention and
+         takes a different route: a web app that runs in the browser rather than installed software. It is
+         an independent implementation with no shared code; QuidiVidi is distributed under
+         <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</p>
+
+      <h4>Bundled libraries</h4>
       <table class="tl">
         <thead><tr><th>Library</th><th>Purpose</th><th>License</th></tr></thead>
         <tbody>
-          <tr><td class="lib">React, React&nbsp;DOM</td><td>User-interface framework for ChatLens</td><td>MIT</td></tr>
+          <tr><td class="lib">React, React&nbsp;DOM</td><td>User-interface framework</td><td>MIT</td></tr>
           <tr><td class="lib">wink-pos-tagger</td><td>Offline English part-of-speech tagging (with wink-tokenizer, wink-lemmatizer, wink-lexicon, wink-helpers, wink-porter2-stemmer)</td><td>MIT</td></tr>
         </tbody>
       </table>
-      <h3>Loaded on demand (only if you use the beta tagger)</h3>
+
+      <h4>Loaded on demand (only if you use the beta tagger)</h4>
       <table class="tl">
         <thead><tr><th>Library</th><th>Purpose</th><th>License</th></tr></thead>
         <tbody>
@@ -158,24 +159,25 @@ table.tl td.lib{font-family:var(--mono);white-space:nowrap}
           <tr><td class="lib">Language model you select</td><td>Part-of-speech model from the Hugging Face Hub</td><td>per that model</td></tr>
         </tbody>
       </table>
-      <h3>Build tooling (not shipped to the browser)</h3>
-      <p>The project is built with <span class="mono">Vite</span> and <span class="mono">TypeScript</span> (both MIT)
-         and tested with <span class="mono">Vitest</span>. These are development dependencies and are not part of the
-         deployed site.</p>
-    </section>
+      <p>The beta tagger downloads its model to your browser from a public CDN when you choose to use it; even
+         then, your transcript is tagged locally and never sent anywhere.</p>
 
-    <section>
-      <h2>References</h2>
+      <h4>References</h4>
       <ul>
         <li>MacWhinney, B. (2000). <em>The CHILDES Project: Tools for Analyzing Talk</em>. The CHAT transcription
-            format and CLAN tools are maintained by <a href="https://talkbank.org/">TalkBank</a>.</li>
+            format and the CLAN/MOR and Batchalign tools are the work of the
+            <a href="https://talkbank.org/">TalkBank</a> project and are referenced, not redistributed, here.</li>
         <li>Brown, R. (1973). <em>A First Language: The Early Stages</em>. Harvard University Press. Source of the 14
-            grammatical morphemes and the morpheme-counting conventions used here.</li>
+            grammatical morphemes and the morpheme-counting conventions used in ChatLens.</li>
         <li>Malvern, D., &amp; Richards, B. (1997). A new measure of lexical diversity (the basis of VOCD-D).</li>
         <li>Liu, H., &amp; MacWhinney, B. Batchalign2: morphosyntactic analysis for CHILDES using Stanza.</li>
       </ul>
-      <p>Sample transcripts included with SLP Tools are synthetic examples created for teaching and do not contain
-         real participant data.</p>
+
+      <h4>Sample data</h4>
+      <p>The sample transcripts included with ChatLens (<span class="mono">demo-play-session.cha</span>,
+         <span class="mono">demo-plain.txt</span>, <span class="mono">demo-long-visit.cha</span>) follow the
+         <a href="https://talkbank.org/">TalkBank</a> CHAT format and are synthetic examples created for
+         teaching; they contain no real participant data.</p>
     </section>
   </div>
 </main>

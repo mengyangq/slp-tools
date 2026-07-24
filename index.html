@@ -37,11 +37,13 @@ a{color:var(--blue-navy)}
 .site-header h1 .acc{color:#7ad0c3;font-style:italic;font-weight:400}
 .site-header .tagline{color:#cdd9e6;font-size:1.12rem;max-width:60ch;margin:0}
 
+.privacybar{background:var(--light-blue);border-bottom:1px solid var(--line)}
+.privacybar .container{padding-top:9px;padding-bottom:9px;font-size:.88rem;color:var(--ink)}
+.privacybar b{color:var(--navy)}
+.privacybar .ic{color:var(--teal)}
+
 main{padding:clamp(28px,5vw,52px) 0}
 .intro{max-width:70ch}
-.intro .privacy{background:var(--light-blue);border:1px solid var(--muted-blue);border-left:4px solid var(--teal);
-  border-radius:12px;padding:14px 18px;margin:18px 0 0;font-size:.98rem}
-.intro .privacy b{color:var(--navy)}
 
 .tools{margin-top:38px}
 .tools h2{font-size:1.5rem;margin-bottom:14px}
@@ -93,14 +95,17 @@ a.tcard:hover .tcard-action{background:#12568b}
   </div>
 </header>
 
+<div class="privacybar">
+  <div class="container"><span class="ic">🔒</span> <b>Private by design:</b> every tool runs entirely on your
+    device. Child and clinical language samples are never uploaded to any server.</div>
+</div>
+
 <main>
   <div class="container">
 
     <section class="intro">
       <p>A growing set of small, focused web tools for SLP students and clinicians. Each one opens in your browser,
          works on your own transcripts and data, and needs no account or install.</p>
-      <p class="privacy"><b>Private by design.</b> Every tool runs entirely on your device. Child and clinical
-         language samples are never uploaded to any server.</p>
     </section>
 
     <section class="tools" aria-label="Tools">
@@ -110,7 +115,7 @@ a.tcard:hover .tcard-action{background:#12568b}
         <a class="tcard" href="./chatlens/">
           <span class="tnum">Ready to use</span>
           <h3>ChatLens</h3>
-          <p class="tdesc">Language sample analysis for CHAT/CLAN transcripts. Upload a <span style="font-family:var(--mono);font-size:.85em">.cha</span>
+          <p class="tdesc">Language sample analysis for CHAT/CLAN transcripts. Drop in a <span style="font-family:var(--mono);font-size:.85em">.cha</span>
              file and see MLU, morphemes, lexical diversity and more, with a word-by-word transcript view showing
              exactly how every number is derived, and worked formulas that plug in the file's own numbers.</p>
           <ul class="ttopics" aria-label="What it does">
@@ -133,13 +138,12 @@ a.tcard:hover .tcard-action{background:#12568b}
 
 <footer class="site-footer">
   <div class="container">
-    <p class="foot-links"><strong>SLP Tools</strong> &nbsp;&middot;&nbsp; <a href="methods.html">Methods</a>
-       &nbsp;&middot;&nbsp; <a href="credits.html">Credits &amp; licensing</a>
+    <p class="foot-links"><strong>SLP Tools</strong> &nbsp;&middot;&nbsp; <a href="credits.html">Credits &amp; licensing</a>
        &nbsp;&middot;&nbsp; by <a href="https://mengyang.dev">Mengyang Qiu</a></p>
     <p class="foot-notice">Source code is licensed under the <a href="https://opensource.org/licenses/MIT">MIT License</a>.
        Except where otherwise noted, original documentation and sample data &copy; 2026 Mengyang Qiu is licensed under
        <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>. Third-party libraries retain their
-       original licenses. Transcripts follow the <a href="https://talkbank.org/">TalkBank</a> CHAT format; sample data is synthetic.</p>
+       original licenses.</p>
   </div>
 </footer>
 

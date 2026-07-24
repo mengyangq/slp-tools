@@ -102,12 +102,23 @@ pre{background:var(--navy);color:#eaf1f8;border-radius:10px;padding:13px 15px;ov
       <h2>What ChatLens reads</h2>
       <p>CHAT (<span class="mono">.cha</span>) files, or plain <span class="mono">.txt</span> in CLAN format:
       <span class="mono">@headers</span>, main tiers (<span class="mono">*CHI:</span>), and dependent tiers
-      (<span class="mono">%mor, %gra, %pho</span>, and others). Both %mor styles are supported: classic
-      <b>MOR/POST</b> notation (<span class="mono">n|doggie-PL</span>) and <b>UD-style</b> output from
-      Batchalign2/Stanza. TalkBank is moving to UD; classic MOR remains available for English, French,
-      Spanish, and Mandarin, and gives the finest morphological detail. Gem marks
+      (<span class="mono">%mor, %gra, %pho</span>, and others). Gem marks
       (<span class="mono">@Bg/@Eg</span>) and time-alignment bullets are read too, powering the Sections and
       Rate tools.</p>
+      <p>Both %mor styles are supported, and ChatLens works out which one it is looking at:</p>
+      <pre>classic MOR/POST   det:art|the n|doggie-PL v|fall&amp;PAST adv|down .
+UD (Batchalign2)   det|the-Def-Art noun|dog-Plur aux|be-Fin-Pres verb|run-Part .</pre>
+      <p>They differ in a way that matters for counting. Classic MOR <b>segments</b>: the
+      <span class="mono">-PL</span> in <span class="mono">n|doggie-PL</span> is a morpheme you can point at.
+      UD instead <b>describes</b> a word with feature values (<span class="mono">-Plur</span>,
+      <span class="mono">-Pres</span>, <span class="mono">-Nom</span>); those are labels on the whole word,
+      not pieces of it, so they cannot be counted as morphemes. ChatLens therefore uses a UD tier for what it
+      is good at — part of speech and lemmas — and, on English files, counts morphemes with its own rules
+      engine instead (badged <span class="badge rules">estimated · rules</span>). For a language with no
+      morpheme rules, a UD-tagged word counts as one morpheme unless a clitic
+      (<span class="mono">~</span>) splits it. TalkBank is moving to UD; classic MOR remains available for
+      English, French, Spanish, and Mandarin, and is the only tier that gives exact morpheme counts — if you
+      need morpheme-level numbers, prefer it.</p>
     </section>
 
     <section id="badges">
@@ -170,7 +181,12 @@ pre{background:var(--navy);color:#eaf1f8;border-radius:10px;padding:13px 15px;ov
       <p class="formula">MLU5 = mean length of the 5 longest utterances</p>
       <p class="formula">MLT = utterances ÷ turns, and words ÷ turns (a turn = a run of back-to-back utterances by the same speaker)</p>
       <p>The "How is this calculated?" panel on each tab shows these formulas with your file's actual numbers
-      plugged in.</p>
+      plugged in, including the exact denominator used.</p>
+      <p>Two caveats the panel will flag for you when they apply. If a speaker has fewer than five counted
+      utterances, MLU5 is the mean of however many there are, and is not comparable with MLU5 from a longer
+      sample. And if some counted utterances have no morpheme analysis at all — a file in a language with no
+      %mor tier and no morpheme rules — MLU (morphemes) is averaged over only the utterances that do have
+      one, so it rests on a smaller set than MLU (words).</p>
     </section>
 
     <section id="morphemes">
@@ -180,9 +196,16 @@ pre{background:var(--navy);color:#eaf1f8;border-radius:10px;padding:13px 15px;ov
       <span class="mono">-ing</span>, and contracted parts (<span class="mono">n't, 're, 'll</span>).
       Irregular pasts and plurals (<span class="mono">went, feet</span>) count as one morpheme. Compounds,
       proper names, and playful reduplications count as one. Catenatives (<span class="mono">gonna, wanna</span>)
-      count as two. In %mor terms: each base word, each <span class="mono">-suffix</span>, and each
+      count as two. Plural possessives count all three parts: <span class="mono">dogs'</span> = dog + -s + 's.
+      In classic MOR terms: each base word, each <span class="mono">-suffix</span>, and each
       <span class="mono">prefix#</span> adds one; fused features (<span class="mono">&amp;PAST, &amp;3S</span>)
-      add nothing; clitics (<span class="mono">~</span>) count separately.</p>
+      add nothing; clitics (<span class="mono">~</span>) count separately. A compound keeps an inflection
+      sitting on it (<span class="mono">n|+n|birth+n|day-PL</span> = 2 morphemes). On a <b>UD</b> tier every
+      field after the lemma is a feature and adds nothing — see "What ChatLens reads" above.</p>
+      <p>When a file has a %mor tier but some lines do not line up with the words spoken, those lines are
+      estimated with the English rules engine instead; the MLU tab says how many, and Advanced &rsaquo; Check
+      lists them. A %mor tier may either include entries for retraced material or leave them out — both
+      layouts line up correctly.</p>
     </section>
 
     <section id="diversity">
@@ -192,6 +215,14 @@ pre{background:var(--navy);color:#eaf1f8;border-radius:10px;padding:13px 15px;ov
       and <b>VOCD-D</b> (random samples of 35 to 50 words, 100 draws, 3 runs, fixed seed, curve fit following
       Malvern and Richards). Numbers are comparable within one tool, not across tools: CLAN, SALT, and others
       apply slightly different conventions. ChatLens documents its rules here and labels every number's source.</p>
+      <p><b>Which words go into "tokens".</b> Every intelligible word the speaker produced, including words in
+      utterances that MLU leaves out. An utterance containing <span class="mono">xxx</span> is dropped from MLU
+      as a whole, but the words in it were still said, so they count towards the vocabulary measures and the
+      frequency lists. That is why the Overview can show, say, 1 utterance analyzed and 10 word tokens.</p>
+      <p><b>When VOCD cannot answer.</b> If nearly every word in the sample is different, the curve fit has
+      nothing to converge on and D is effectively unbounded. ChatLens says <span class="mono">&gt; 400</span>
+      rather than printing the top of its search range as though it were a measurement. It usually means the
+      sample is too short for VOCD; use MATTR, or collect more words.</p>
     </section>
 
     <section id="mor">
@@ -240,6 +271,14 @@ batchalign morphotag --lang=eng  input_dir  output_dir</pre>
       distinction is approximated as contracted versus not contracted. No dependency-based syntax measures yet
       (DSS, IPSyn). VOCD may differ slightly from CLAN's implementation. Spelling-based cluster detection is
       approximate; use %pho for exact clusters. Speaking rates from line-level times include within-line pauses.</p>
+      <p>On plain transcripts the rules engine decides some things by word shape alone, and can be wrong on an
+      individual word. A contracted <span class="mono">'s</span> is read as an auxiliary when a progressive
+      follows (<span class="mono">daddy's driving</span>), as a copula on a pronoun host or at the end of an
+      utterance, and as a possessive otherwise — so <span class="mono">the dog's big</span> is filed as a
+      possessive. Brown's counts are occurrence tallies, not percentages supplied in obligatory contexts, so
+      they do not by themselves establish mastery. Postcodes (<span class="mono">[+ exc]</span>) are read and
+      kept but do not exclude anything, matching CLAN's default. A %mor-tagged file avoids the first of these;
+      the others are inherent to the measures.</p>
     </section>
 
     <section id="citing">

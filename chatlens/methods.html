@@ -9,7 +9,8 @@
 <style>
 :root{
   --deep-navy:#08203a; --navy:#0B2D4D; --blue-navy:#16639f; --muted-blue:#2E6F9E;
-  --light-blue:#EAF4FB; --paper:#F6F1E6; --paper-2:#EFE7D6; --line:#E2D9C5;
+  --light-blue:#EAF4FB; --paper:#F6F1E6; --line:#E2D9C5;
+  --surface:#EEF5F5;   /* quiet surface tint, matches the app */
   --white:#FFFFFF; --ink:#1b2a3a; --muted:#5d6675; --amber:#dc9329; --teal:#2f7077; --coral:#c0573f;
   --success:#E9F4EE; --success-border:#2f7d57; --warnb:#ECD2A0;
   --shadow:0 12px 30px rgba(20,40,70,.06);
@@ -43,7 +44,7 @@ main{padding:clamp(28px,5vw,48px) 0;flex:1}
 section{margin:0 0 30px}
 h2{font-size:1.3rem;border-bottom:2px solid var(--line);padding-bottom:8px;margin-bottom:12px}
 p{margin:0 0 12px}
-.mono{font-family:var(--mono);font-size:.9em;background:var(--paper-2);padding:1px 5px;border-radius:4px}
+.mono{font-family:var(--mono);font-size:.9em;background:var(--surface);padding:1px 5px;border-radius:4px}
 .back{display:inline-block;margin-bottom:18px;font-family:var(--mono);font-size:.8rem;color:var(--muted);text-decoration:none}
 .back:hover{color:var(--navy)}
 pre{background:var(--navy);color:#eaf1f8;border-radius:10px;padding:13px 15px;overflow:auto;

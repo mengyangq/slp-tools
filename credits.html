@@ -147,20 +147,26 @@ table.tl td.lib{font-family:var(--mono);white-space:nowrap}
         <thead><tr><th>Library</th><th>Purpose</th><th>License</th></tr></thead>
         <tbody>
           <tr><td class="lib">React, React&nbsp;DOM</td><td>User-interface framework</td><td>MIT</td></tr>
-          <tr><td class="lib">wink-pos-tagger</td><td>Offline English part-of-speech tagging (with wink-tokenizer, wink-lemmatizer, wink-lexicon, wink-helpers, wink-porter2-stemmer)</td><td>MIT</td></tr>
         </tbody>
       </table>
+      <p>That is the whole list. ChatLens loads nothing at runtime &mdash; no CDN, no models, no fonts &mdash;
+         and contains no tagger or morphology estimator of its own: it reads the annotation a transcript
+         already carries and says so when that annotation is missing. Producing <span class="mono">%mor</span>
+         is CLAN's job, and the Methods page explains how.</p>
 
-      <h4>Loaded on demand (only if you use the beta tagger)</h4>
-      <table class="tl">
-        <thead><tr><th>Library</th><th>Purpose</th><th>License</th></tr></thead>
-        <tbody>
-          <tr><td class="lib">@huggingface/transformers (transformers.js)</td><td>In-browser neural part-of-speech tagging; loaded from jsDelivr</td><td>Apache-2.0</td></tr>
-          <tr><td class="lib">Language model you select</td><td>Part-of-speech model from the Hugging Face Hub</td><td>per that model</td></tr>
-        </tbody>
-      </table>
-      <p>The beta tagger downloads its model to your browser from a public CDN when you choose to use it; even
-         then, your transcript is tagged locally and never sent anywhere.</p>
+      <h4>Adapted source code</h4>
+      <p>ChatLens's morpheme counting is a direct port of <span class="mono">countMorphs()</span> from
+         <b>CLAN</b> &mdash; <a href="https://github.com/TalkBank/OSX-CLAN">github.com/TalkBank/OSX-CLAN</a>,
+         <span class="mono">src/clan/cutt.cpp</span> &mdash; by Brian MacWhinney and colleagues at Carnegie
+         Mellon University, distributed under the <b>BSD 3-Clause License</b>. This is the single most
+         consequential piece of the application: it is what makes every morpheme number ChatLens reports the
+         same number CLAN reports, rather than an independent approximation. Verified against CLAN 01-May-2026
+         output on both %mor tier generations. Our port lives in
+         <span class="mono">chat-core/src/clan-morphemes.ts</span> and carries the same attribution.</p>
+      <p>ChatLens is not affiliated with or endorsed by TalkBank or Carnegie Mellon University. Any error in
+         the port is ours, not CLAN's; the one place where we deliberately differ from CLAN's shipped
+         behaviour (the <span class="mono">-Irr</span> case comparison) is documented in the app and on the
+         Methods page, with both numbers shown.</p>
 
       <h4>References</h4>
       <ul>

@@ -53,7 +53,6 @@ pre{background:var(--navy);color:#eaf1f8;border-radius:10px;padding:13px 15px;ov
   letter-spacing:.04em;text-transform:uppercase;border-radius:999px;padding:2px 8px;vertical-align:middle;border:1px solid}
 .badge.mor{background:var(--success);color:#276646;border-color:var(--success-border)}
 .badge.rules{background:#fbf4e7;color:#8a5a12;border-color:var(--warnb)}
-.badge.tagger{background:#efeaf6;color:#5a4a86;border-color:#b3a6d4}
 .badge.surface{background:var(--light-blue);color:var(--blue-navy);border-color:var(--muted-blue)}
 .formula{font-family:var(--mono);font-size:.82rem;background:var(--white);border:1px solid var(--line);
   border-radius:8px;padding:8px 12px;margin:8px 0}
@@ -89,14 +88,14 @@ pre{background:var(--navy);color:#eaf1f8;border-radius:10px;padding:13px 15px;ov
       <a href="#privacy">Privacy</a> <a href="#reads">What it reads</a> <a href="#badges">Badges</a>
       <a href="#words">Which words count</a> <a href="#window">Sample window</a> <a href="#mlu">MLU · MLU5 · MLT</a> <a href="#morphemes">Morphemes</a>
       <a href="#diversity">Diversity</a> <a href="#mor">Adding %mor</a> <a href="#advanced">Advanced tools</a>
-      <a href="#tagger">Neural tagger</a> <a href="#limits">Limitations</a> <a href="#citing">Citing</a>
+      <a href="#limits">Limitations</a> <a href="#citing">Citing</a>
     </nav>
 
     <section id="privacy">
       <h2>Privacy</h2>
       <p>ChatLens runs entirely in your browser. Transcripts are parsed and analyzed on your computer and are
-      <b>never uploaded to any server</b>. After the first visit the page also works offline. The optional
-      neural tagger downloads a model <i>to</i> your browser; your data still never leaves your computer.</p>
+      <b>never uploaded to any server</b>. After the first visit the page works offline, and nothing is
+      downloaded at any point.</p>
     </section>
 
     <section id="reads">
@@ -113,33 +112,52 @@ UD (Batchalign2)   det|the-Def-Art noun|dog-Plur aux|be-Fin-Pres verb|run-Part .
       <span class="mono">-PL</span> in <span class="mono">n|doggie-PL</span> is a morpheme you can point at.
       UD instead <b>describes</b> a word with feature values (<span class="mono">-Plur</span>,
       <span class="mono">-Pres</span>, <span class="mono">-Nom</span>); those are labels on the whole word,
-      not pieces of it, so they cannot be counted as morphemes. ChatLens therefore uses a UD tier for what it
-      is good at — part of speech and lemmas — and, on English files, counts morphemes with its own rules
-      engine instead (badged <span class="badge rules">estimated · rules</span>). For a language with no
-      morpheme rules, a UD-tagged word counts as one morpheme unless a clitic
-      (<span class="mono">~</span>) splits it. TalkBank is moving to UD; classic MOR remains available for
-      English, French, Spanish, and Mandarin, and is the only tier that gives exact morpheme counts — if you
-      need morpheme-level numbers, prefer it.</p>
+      not pieces of it. TalkBank put it plainly: &ldquo;its control of morphological analysis on the %mor line
+      is not as analytic as MOR&rdquo; &mdash; which is why they still maintain MOR grammars for English,
+      French, Spanish and Mandarin. So ChatLens uses a UD tier for what it is good at &mdash; part of speech
+      and lemmas &mdash; and reports <b>no morpheme count at all</b> from one.</p>
+
+      <h3>ChatLens does not annotate</h3>
+      <p>It reads annotation; it does not produce it. There is no rules engine, no part-of-speech tagger and no
+      neural model in this tool, and there is no way to turn one on. That is deliberate. Producing
+      <span class="mono">%mor</span> is CLAN's job, and it does it with decades of per-language lexicon work
+      behind it. A morpheme count estimated here that disagreed with CLAN's would not teach you that two
+      estimators differ &mdash; it would teach you that one of the two tools is broken, without telling you
+      which. So when a measure needs annotation this file does not have, ChatLens says so and shows you how to
+      get it, rather than guessing.</p>
+      <p>The same rule governs phonology: consonant clusters and phoneme counts are read from a
+      <span class="mono">%pho</span> tier or not at all. English spelling is a poor guide to pronunciation
+      (<i>through</i>, <i>thought</i>, <i>tough</i>), so a count derived from letters would contradict any real
+      transcription.</p>
     </section>
 
     <section id="badges">
       <h2>Reading the badges</h2>
-      <p>Every number tells you where it came from.
-      <span class="badge mor">exact · %mor</span> means it was computed from the file's %mor tier and is exact
-      given that tagging. <span class="badge rules">estimated · rules</span> means ChatLens applied its
-      deterministic English word-ending rules (Brown-style) because the file has no %mor tier.
-      <span class="badge tagger">estimated · tagger</span> means a part-of-speech tagger running in your browser
-      made the call. <span class="badge surface">main tier</span> marks measures counted directly from the words
-      spoken; these need no morphology and work for any language.</p>
+      <p>Every number tells you where it came from, and there are only three answers.
+      <span class="badge mor">exact · %mor</span> means it was computed from the file's classic MOR %mor tier
+      and is exact given that tagging. <span class="badge surface">main tier</span> marks measures counted
+      directly from the words spoken; these need no morphology and work for any language.
+      <span class="badge none">needs %mor</span> means the file does not carry the annotation this measure
+      requires &mdash; ChatLens will not fill the gap with a guess.</p>
     </section>
 
     <section id="words">
       <h2>Which words count</h2>
       <p>Counted words exclude: unintelligible material (<span class="mono">xxx, yyy, www</span>), repeated or
-      revised material (<span class="mono">[/], [//], [///]</span>; the material before the marker), fillers
-      (<span class="mono">&amp;-um</span>), events (<span class="mono">&amp;=laughs</span>), sound fragments
+      revised material (<span class="mono">[/], [//], [///], [/-], [/?]</span>; the material before the marker)
+      and material marked excluded with <span class="mono">[e]</span>, fillers in either notation
+      (<span class="mono">&amp;-um</span> or the older bare <span class="mono">&amp;um</span>), events
+      (<span class="mono">&amp;=laughs</span>), sound fragments
       (<span class="mono">&amp;+…</span>), omitted words (<span class="mono">0is</span>), pauses, and annotation
-      codes. Replacements like <span class="mono">goggie [: doggie]</span> are analyzed as the intended word.
+      codes. Following CLAN's MLU defaults (manual p100), the bare hesitations
+      <span class="mono">uh</span> and <span class="mono">um</span> and any form beginning
+      <span class="mono">0 &amp; + - $</span> are also left out of MLU, though they still count as word
+      tokens for frequency and TTR, as they do in CLAN's FREQ. An utterance postcoded
+      <span class="mono">[+ mlue]</span> is dropped from MLU entirely; other postcodes such as
+      <span class="mono">[+ exc]</span> and <span class="mono">[+ bch]</span> require an explicit switch in
+      CLAN, so they are counted here and reported under &ldquo;How is this calculated?&rdquo; instead. A line
+      opening with <span class="mono">+,</span> completes the same speaker's previous broken-off line, and the
+      pair counts as one utterance. Replacements like <span class="mono">goggie [: doggie]</span> are analyzed as the intended word.
       Shortened forms like <span class="mono">(be)cause</span> are completed. Compounds
       (<span class="mono">peanut_butter</span>) are one word and one morpheme. Contractions
       (<span class="mono">it's, don't</span>) are one word and two morphemes. Word length is counted in
@@ -203,10 +221,10 @@ UD (Batchalign2)   det|the-Def-Art noun|dog-Plur aux|be-Fin-Pres verb|run-Part .
       add nothing; clitics (<span class="mono">~</span>) count separately. A compound keeps an inflection
       sitting on it (<span class="mono">n|+n|birth+n|day-PL</span> = 2 morphemes). On a <b>UD</b> tier every
       field after the lemma is a feature and adds nothing — see "What ChatLens reads" above.</p>
-      <p>When a file has a %mor tier but some lines do not line up with the words spoken, those lines are
-      estimated with the English rules engine instead; the MLU tab says how many, and Advanced &rsaquo; Check
-      lists them. A %mor tier may either include entries for retraced material or leave them out — both
-      layouts line up correctly.</p>
+      <p>When a file has a %mor tier but some lines do not line up with the words spoken, those lines are left
+      out of the morpheme mean rather than guessed at; the MLU tab says how many, and Advanced &rsaquo; Check
+      lists them so you can fix them in CLAN. A %mor tier may either include entries for retraced material or
+      leave them out &mdash; both layouts line up correctly.</p>
     </section>
 
     <section id="diversity">
@@ -255,31 +273,62 @@ batchalign morphotag --lang=eng  input_dir  output_dir</pre>
       file structure, parser notes, and %mor/%gra alignment against the spoken words.</p>
     </section>
 
-    <section id="tagger">
-      <h2>In-browser tagger (beta)</h2>
-      <p>The neural tagger loads transformers.js from a CDN and a part-of-speech model from the Hugging Face
-      Hub, then tags locally in your browser. It needs internet for the one-time download and works offline
-      afterwards. Built-in choices: English (BERT, UD part-of-speech tags), French (CamemBERT, French Treebank
-      tags), and Chinese (BERT); you can also paste any compatible token-classification model id. No converted
-      Spanish model exists on the Hub yet; for Spanish, use the %mor route above. Accuracy on child speech has
-      not been validated; treat results as exploratory and prefer %mor for reportable numbers.</p>
-    </section>
-
     <section id="limits">
       <h2>Known limitations</h2>
-      <p>Morpheme estimation on plain transcripts is English-only for now (Spanish and French morphology needs a
-      %mor tier, pending validated counting conventions). The contractible/uncontractible copula and auxiliary
+      <h3>MLU in morphemes is English-shaped, in CLAN and therefore here</h3>
+      <p>Morpheme counts come from CLAN's own <span class="mono">countMorphs()</span>, and that function traces
+      a fixed list of <b>English</b> morphemes: plural, past, possessive, plural-possessive, present participle,
+      contracted negative, contracted auxiliary. The CLAN manual states the list and adds &ldquo;We are working
+      on creating a list of morphemes to track for other languages.&rdquo; Some of the markers it tests are
+      cross-linguistic UD feature names (<span class="mono">-Plur</span>, <span class="mono">-Past</span>), so a
+      Spanish or German file does get a number &mdash; but nothing in the list covers case, gender agreement,
+      aspect particles or classifiers. Treat MLU in morphemes for a non-English sample as a partial count, not
+      a complete morphological analysis. MLU in words, MLT and lexical diversity carry no such assumption.</p>
+      <h3>Why we do not offer morpheme counting for Spanish or French</h3>
+      <p>We checked the acquisition literature before deciding. For both languages the field has moved
+      <i>away</i> from morpheme-based MLU deliberately, and there is no convention a tool could implement
+      without inventing one.</p>
+      <p><b>Spanish.</b> Gutiérrez-Clellen, Restrepo, Bedore, Peña &amp; Anderson (2000, <i>LSHSS</i> 31, 88&ndash;98)
+      compared four methods of computing Spanish MLU in morphemes and found significant inconsistencies
+      between them. The published conventions disagree by a factor of two to four on a single word: SALT's
+      Spanish rules mark only the plural <span class="mono">-s</span>, explicitly declining to decompose verb
+      conjugations or count diminutives, so <i>corrieron</i> is one morpheme; the Linares (1981) and
+      Blume &amp; Lust criteria decompose it into root, theme vowel and inflection. Aguado (1988,
+      <i>Infancia y Aprendizaje</i> 43, 75&ndash;95) found the two MLU types correlate at r&nbsp;=&nbsp;.99 in
+      Spanish, so little is lost. Baron, Bedore, Peña, Lovgren-Uribe, López &amp; Villagrana (2018,
+      <i>AJSLP</i> 27, 975&ndash;987) state the field position: MLUw "has become widely accepted for languages
+      other than English", given "a lack of an adequate developmental frame of reference in morpheme-rich
+      languages". What discriminates in Spanish is accuracy on articles, direct-object clitics, verb
+      inflection and subjunctive in obligatory contexts &mdash; Castilla-Earls, Pérez-Leroux, Fulcher-Rood
+      &amp; Barr (2021, <i>LSHSS</i> 52, 497&ndash;511) report 85% sensitivity and 91% specificity from verb
+      and subjunctive accuracy alone; Bedore &amp; Leonard (2005, <i>Applied Psycholinguistics</i> 26,
+      195&ndash;225) found Spanish-speaking children with SLI accurate on verb inflections but impaired on
+      articles and clitics.</p>
+      <p><b>French.</b> The same conclusion, for partly different reasons: word and morpheme MLU correlate at
+      r&nbsp;=&nbsp;.991, French carries relatively few overt markers, and counting words avoids depending on
+      "decisions made by the researcher and/or categories of automatic analyzer used for morphemic
+      segmentation". There is also a complication peculiar to French &mdash; much of its verb inflection is
+      silent. <i>je parle</i>, <i>tu parles</i> and <i>ils parlent</i> are homophones, so a morpheme count
+      read off spelling would credit distinctions the child did not audibly produce.</p>
+      <p>So ChatLens reports exact word-level measures for these languages and says so on the MLU tab, rather
+      than picking one convention and producing a number with no normative comparison behind it. Obligatory-
+      context accuracy is the measure worth adding next; it needs error coding rather than counting, so it is
+      not in this version.</p>
+      <p>As far as we can tell no per-language morpheme list has been published for CLAN &mdash; the manual's
+      &ldquo;we are working on&rdquo; still stands, and KIDEVAL's other-language support
+      (<span class="mono">+lfra</span>, <span class="mono">+lspa</span>, <span class="mono">+ljpn</span>,
+      <span class="mono">+lzho</span> and so on) supplies comparison norms rather than a different morpheme
+      counter. If you know otherwise, we would like to hear.</p>
+      <p>Morpheme-level measures require a classic MOR %mor tier &mdash; there is no estimator, by design (see
+      &ldquo;ChatLens does not annotate&rdquo; above). The contractible/uncontractible copula and auxiliary
       distinction is approximated as contracted versus not contracted. No dependency-based syntax measures yet
-      (DSS, IPSyn). VOCD may differ slightly from CLAN's implementation. Spelling-based cluster detection is
-      approximate; use %pho for exact clusters. Speaking rates from line-level times include within-line pauses.</p>
-      <p>On plain transcripts the rules engine decides some things by word shape alone, and can be wrong on an
-      individual word. A contracted <span class="mono">'s</span> is read as an auxiliary when a progressive
-      follows (<span class="mono">daddy's driving</span>), as a copula on a pronoun host or at the end of an
-      utterance, and as a possessive otherwise — so <span class="mono">the dog's big</span> is filed as a
-      possessive. Brown's counts are occurrence tallies, not percentages supplied in obligatory contexts, so
-      they do not by themselves establish mastery. Postcodes (<span class="mono">[+ exc]</span>) are read and
-      kept but do not exclude anything, matching CLAN's default. A %mor-tagged file avoids the first of these;
-      the others are inherent to the measures.</p>
+      (DSS, IPSyn), though the %gra tier is read. Brown's 14 are English-only by construction and are not offered
+      for other languages. VOCD may differ slightly from CLAN's implementation, which
+      runs on lemmas from %mor by default. Speaking rates from line-level times include within-line pauses.</p>
+      <p>Brown's counts are occurrence tallies, not percentages supplied in obligatory contexts, so they do not
+      by themselves establish mastery. Postcodes other than <span class="mono">[+ mlue]</span> are read and
+      reported but do not exclude anything, matching CLAN's defaults &mdash; the MLU tab shows what excluding
+      each would do. These are inherent to the measures rather than gaps in the implementation.</p>
     </section>
 
     <section id="citing">

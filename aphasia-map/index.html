@@ -89,8 +89,9 @@ label.opt .c{color:var(--muted);margin-left:auto;font-size:12px;font-variant-num
 .legend .foot .hub{width:9px;height:9px;border-radius:50%;background:#fff;border:2px solid var(--ink);box-shadow:0 0 0 2px #fff,0 0 0 3.5px rgba(21,34,56,.35);display:inline-block;margin-right:4px;vertical-align:-1px}
 .legend .foot .brg{width:9px;height:9px;transform:rotate(45deg);background:#fff;border:2px solid var(--ink);display:inline-block;margin-right:5px;vertical-align:-1px}
 .zoom{position:absolute;right:14px;top:14px;display:flex;flex-direction:column;gap:4px;z-index:5}
+#list.show~.zoom,#stage.listing .zoom,#stage.listing .legend,#stage.listing .snap{display:none}
 .zoom button{width:32px;height:32px;padding:0;background:#fff;font-size:17px;line-height:1}
-.viewtoggle{position:absolute;left:14px;top:14px;z-index:5;display:flex;background:#fff;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.viewtoggle{position:absolute;left:14px;top:14px;z-index:14;display:flex;background:#fff;border:1px solid var(--line);border-radius:7px;overflow:hidden}
 .viewtoggle button{border:none;border-radius:0;padding:6px 14px;color:var(--muted)}
 .viewtoggle button.on{background:var(--accent);color:#fff}
 .viewtoggle button:hover:not(.on){background:var(--accent-soft)}
@@ -259,8 +260,6 @@ dl.gloss dd{margin:2px 0 0}
       <p>Each study card gives the title, authors, year, venue, and DOI, taken from the publisher's record in Crossref; a short list of keywords drawn from the abstract; and the characteristics charted for the review, which describe what the abstract reports. The one-sentence summary, where shown, is Semantic Scholar's automatically generated TLDR. Abstracts are not reproduced here.</p>
       <h3>Snapshot</h3>
       <p>The map is a snapshot of the literature as of the search date, July 27, 2026. It is not updated as new studies appear. Positions and community boundaries are properties of this map; a study near a boundary could reasonably belong to either neighbour.</p>
-      <h3>Citing</h3>
-      <p id="citeArticle">Qiu, M. (2026). <i>[Article title]</i>. American Journal of Speech-Language Pathology. [DOI to follow.]</p>
       <h3>Glossary</h3>
       <dl class="gloss">
         <dt>Aphasia</dt><dd>An acquired language disorder, most often after stroke; primary progressive aphasia (PPA) is a form that begins gradually with neurodegenerative disease.</dd>
@@ -430,13 +429,13 @@ const cy=cytoscape({
     {selector:'node',style:{'background-color':'data(color)','width':'mapData(deg,3,25,9,26)','height':'mapData(deg,3,25,9,26)','border-width':0,'label':'','transition-property':'opacity,border-width,width,height','transition-duration':'220ms','opacity':1}},
     {selector:'node[?hub]',style:{'border-width':2.5,'border-color':'#ffffff','border-opacity':1,'shadow-blur':0,'underlay-color':'data(color)','underlay-opacity':0.28,'underlay-padding':6,'underlay-shape':'ellipse'}},
     {selector:'node[?bridge]',style:{'shape':'diamond','width':'mapData(deg,3,25,13,30)','height':'mapData(deg,3,25,13,30)','border-width':2,'border-color':'#ffffff'}},
-    {selector:'edge',style:{'width':'mapData(w,0.45,0.97,0.6,2.2)','line-color':'#b9c6d6','opacity':0.55,'curve-style':'haystack','haystack-radius':0,'transition-property':'opacity','transition-duration':'220ms'}},
+    {selector:'edge',style:{'width':'mapData(w,0.45,0.97,0.35,1.3)','line-color':'#c9d3de','opacity':0.42,'curve-style':'unbundled-bezier','control-point-distances':[18],'control-point-weights':[0.5],'transition-property':'opacity','transition-duration':'220ms'}},
     {selector:'.dim',style:{'opacity':0.07}},
     {selector:'edge.dim',style:{'opacity':0.03}},
     {selector:'node.hover',style:{'border-width':3,'border-color':'#152238','border-opacity':0.9}},
     {selector:'node.focus',style:{'border-width':3.5,'border-color':'#152238','z-index':10}},
     {selector:'node.nbr',style:{'border-width':2,'border-color':'#152238','border-opacity':0.6,'z-index':9}},
-    {selector:'edge.nbr',style:{'line-color':'#152238','opacity':0.8,'width':2.2,'z-index':8}},
+    {selector:'edge.nbr',style:{'line-color':'#152238','opacity':0.7,'width':1.6,'z-index':8}},
     {selector:'.fade',style:{'opacity':0.12}},
     {selector:'edge.fade',style:{'opacity':0.04}},
   ]
@@ -527,7 +526,7 @@ function renderList(){
 }
 $('#list thead').addEventListener('click',e=>{const th=e.target.closest('th');if(!th)return;S.sort=[th.dataset.k,S.sort[0]===th.dataset.k?-S.sort[1]:(th.dataset.k==='year'?-1:1)];renderList();});
 $('#listBody').addEventListener('click',e=>{const tr=e.target.closest('tr');if(!tr)return;setView('map');select(tr.dataset.id);});
-function setView(v){S.view=v;$('#vMap').classList.toggle('on',v==='map');$('#vList').classList.toggle('on',v==='list');$('#list').classList.toggle('show',v==='list');if(v==='list')renderList();writeURL();}
+function setView(v){S.view=v;$('#stage').classList.toggle('listing',v==='list');$('#vMap').classList.toggle('on',v==='map');$('#vList').classList.toggle('on',v==='list');$('#list').classList.toggle('show',v==='list');if(v==='list')renderList();writeURL();}
 $('#vMap').onclick=()=>setView('map'); $('#vList').onclick=()=>setView('list');
 
 /* ---- pages ---- */

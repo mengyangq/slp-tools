@@ -89,7 +89,8 @@ label.opt .c{color:var(--muted);margin-left:auto;font-size:12px;font-variant-num
 .legend .foot .hub{width:9px;height:9px;border-radius:50%;background:#fff;border:2px solid var(--ink);box-shadow:0 0 0 2px #fff,0 0 0 3.5px rgba(21,34,56,.35);display:inline-block;margin-right:4px;vertical-align:-1px}
 .legend .foot .brg{width:9px;height:9px;transform:rotate(45deg);background:#fff;border:2px solid var(--ink);display:inline-block;margin-right:5px;vertical-align:-1px}
 .zoom{position:absolute;right:14px;top:14px;display:flex;flex-direction:column;gap:4px;z-index:5}
-#list.show~.zoom,#stage.listing .zoom,#stage.listing .legend,#stage.listing .snap{display:none}
+#stage.listing .zoom,#stage.listing .legend,#stage.listing .snap,
+#stage.paged .viewtoggle,#stage.paged .zoom,#stage.paged .legend,#stage.paged .snap{display:none}
 .zoom button{width:32px;height:32px;padding:0;background:#fff;font-size:17px;line-height:1}
 .viewtoggle{position:absolute;left:14px;top:14px;z-index:14;display:flex;background:#fff;border:1px solid var(--line);border-radius:7px;overflow:hidden}
 .viewtoggle button{border:none;border-radius:0;padding:6px 14px;color:var(--muted)}
@@ -194,7 +195,7 @@ dl.gloss dd{margin:2px 0 0}
   <h1>AI for Aphasia <small>a map of the research, 2010 to mid-2026</small></h1>
   <nav aria-label="Sections">
     <button data-page="map" class="on">Map</button>
-    <button data-page="start">Start here</button>
+    <button data-page="start">Communities</button>
     <button data-page="reviews">Reviews</button>
     <button data-page="about">About</button>
   </nav>
@@ -237,7 +238,7 @@ dl.gloss dd{margin:2px 0 0}
     </section>
 
     <section class="page" id="pStart"><div class="inner">
-      <h2>Start here</h2>
+      <h2>Communities</h2>
       <p class="lead">Twelve research communities, each with its three most connected studies (hubs), and the ten studies that link communities most strongly (bridges). A hub is a natural first read for a community; a bridge shows where two lines of work already meet.</p>
       <div class="cgrid" id="commGrid"></div>
       <h3>Bridges between communities</h3>
@@ -530,7 +531,7 @@ function setView(v){S.view=v;$('#stage').classList.toggle('listing',v==='list');
 $('#vMap').onclick=()=>setView('map'); $('#vList').onclick=()=>setView('list');
 
 /* ---- pages ---- */
-function showPage(p){S.page=p;document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.page===p));
+function showPage(p){S.page=p;$('#stage').classList.toggle('paged',p!=='map');document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.page===p));
   $('#pStart').classList.toggle('show',p==='start');$('#pReviews').classList.toggle('show',p==='reviews');$('#pAbout').classList.toggle('show',p==='about');writeURL();}
 document.querySelector('nav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)showPage(b.dataset.page);});
 function buildStart(){

@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI for Aphasia: A Map of the Research</title>
+<meta name="description" content="An interactive map of 412 peer-reviewed studies (2010 to June 2026) that applied artificial intelligence, machine learning, or natural language processing to aphasia, organized into twelve research communities.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#f3f6f9; --panel:#ffffff; --ink:#152238; --muted:#5a697d; --line:#d6dfe8;
+  --accent:#0b7285; --accent-deep:#07566a; --accent-soft:#e3f0f3;
+  --serif:'Newsreader',Georgia,'Times New Roman',serif;
+  --sans:'Source Sans 3','Segoe UI',Helvetica,Arial,sans-serif;
+  --rail:288px; --card:380px; --header:56px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font:15px/1.45 var(--sans);color:var(--ink);background:var(--ground);overflow:hidden}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:1px solid var(--line);border-radius:6px;padding:5px 10px}
+button:hover{background:var(--accent-soft);border-color:var(--accent)}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+button.primary:hover{background:var(--accent-deep)}
+button.ghost{border-color:transparent}
+button.ghost:hover{border-color:var(--line);background:#fff}
+input[type=text],input[type=search],input[type=number],select{font:inherit;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px 8px;background:#fff;width:100%}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.sr{position:absolute;left:-9999px}
+
+/* ---------- header ---------- */
+header{height:var(--header);display:flex;align-items:center;gap:18px;padding:0 18px;background:var(--panel);border-bottom:1px solid var(--line);position:relative;z-index:30}
+header h1{font:500 21px/1 var(--serif);margin:0;letter-spacing:.1px;white-space:nowrap}
+header h1 small{font:400 13px var(--sans);color:var(--muted);margin-left:10px}
+nav{display:flex;gap:4px;margin-left:auto}
+nav button{border:none;border-bottom:2px solid transparent;border-radius:0;padding:6px 10px;color:var(--muted);white-space:nowrap}
+nav button:hover{background:none;color:var(--ink)}
+nav button.on{color:var(--accent);border-bottom-color:var(--accent)}
+#menuBtn{display:none}
+
+/* ---------- layout ---------- */
+#app{display:grid;grid-template-columns:var(--rail) 1fr;height:calc(100% - var(--header));position:relative}
+#rail{background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;padding:14px 16px 24px;font-size:14px}
+#stage{position:relative;overflow:hidden}
+#cy{position:absolute;inset:0}
+#cy canvas{outline:none}
+
+/* ---------- rail ---------- */
+.rail-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.count{font:600 13px var(--sans);color:var(--muted)}
+.count b{color:var(--ink);font-size:15px}
+fieldset{border:none;margin:0 0 6px;padding:0}
+details{border-top:1px solid var(--line);padding:6px 0}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:600;padding:5px 0;list-style:none;display:flex;align-items:center;color:var(--ink)}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'';width:7px;height:7px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(-45deg);margin-left:auto;transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+summary .n{margin-left:6px;font-weight:400;color:var(--accent);font-size:12px}
+label.opt{display:flex;align-items:center;gap:8px;padding:3px 0;cursor:pointer;color:var(--ink)}
+label.opt input{margin:0;accent-color:var(--accent)}
+label.opt .c{color:var(--muted);margin-left:auto;font-size:12px;font-variant-numeric:tabular-nums}
+.sw{width:10px;height:10px;border-radius:50%;flex:none}
+.yr{display:flex;gap:6px;align-items:center;padding:4px 0}
+.yr input{width:78px}
+.rail-actions{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.hint{color:var(--muted);font-size:12.5px;margin:8px 0 0}
+.starts{margin:8px 0 12px}
+.starts h3{font:600 12px var(--sans);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px}
+.chip{display:inline-block;border:1px solid var(--line);border-radius:14px;padding:2px 9px;font-size:12.5px;margin:0 4px 5px 0;background:#fff;cursor:pointer;color:var(--ink)}
+.chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+
+/* ---------- stage overlays ---------- */
+.legend{position:absolute;left:14px;bottom:14px;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12.5px;z-index:5;backdrop-filter:blur(3px)}
+.legend h3{cursor:pointer}
+.legend h3::after{content:'hide';float:right;margin-left:14px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--accent)}
+.legend.min h3::after{content:'show'}
+.legend.min .rows,.legend.min .foot{display:none}
+.legend h3{font:600 11.5px var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 4px}
+.legend .row{display:flex;align-items:center;gap:7px;padding:1.5px 4px;border-radius:4px;cursor:pointer;white-space:nowrap}
+.legend .row:hover{background:var(--accent-soft)}
+.legend .row.off{opacity:.38}
+.legend .row span:nth-child(2){flex:1}
+.legend .row .n{color:var(--muted);padding-left:10px;font-variant-numeric:tabular-nums}
+.legend .foot{margin-top:5px;color:var(--muted);font-size:11.5px;display:flex;gap:10px;align-items:center}
+.legend .foot .hub{width:9px;height:9px;border-radius:50%;background:#fff;border:2px solid var(--ink);box-shadow:0 0 0 2px #fff,0 0 0 3.5px rgba(21,34,56,.35);display:inline-block;margin-right:4px;vertical-align:-1px}
+.legend .foot .brg{width:9px;height:9px;transform:rotate(45deg);background:#fff;border:2px solid var(--ink);display:inline-block;margin-right:5px;vertical-align:-1px}
+.zoom{position:absolute;right:14px;top:14px;display:flex;flex-direction:column;gap:4px;z-index:5}
+.zoom button{width:32px;height:32px;padding:0;background:#fff;font-size:17px;line-height:1}
+.viewtoggle{position:absolute;left:14px;top:14px;z-index:5;display:flex;background:#fff;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.viewtoggle button{border:none;border-radius:0;padding:6px 14px;color:var(--muted)}
+.viewtoggle button.on{background:var(--accent);color:#fff}
+.viewtoggle button:hover:not(.on){background:var(--accent-soft)}
+#tip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;font-size:12.5px;padding:6px 9px;border-radius:6px;max-width:300px;z-index:20;display:none;line-height:1.35;box-shadow:0 4px 14px rgba(21,34,56,.25)}
+#tip .m{color:#b9c6d6;display:block;font-size:11.5px;margin-top:2px}
+.snap{position:absolute;right:14px;bottom:14px;z-index:5;font-size:11.5px;color:var(--muted);background:rgba(255,255,255,.85);padding:3px 8px;border-radius:5px}
+
+/* ---------- study card ---------- */
+#card{position:absolute;top:14px;right:14px;bottom:14px;width:var(--card);background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(21,34,56,.12);z-index:10;display:flex;flex-direction:column;transform:translateX(24px);opacity:0;pointer-events:none;transition:transform .25s ease,opacity .25s ease}
+#card.open{transform:none;opacity:1;pointer-events:auto}
+#card .head{display:flex;align-items:flex-start;gap:8px;padding:12px 14px 6px}
+#card .head .comm{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+#card .close{margin-left:auto;width:28px;height:28px;padding:0;border:none;font-size:20px;line-height:1;color:var(--muted)}
+#card .body{padding:0 14px 14px;overflow-y:auto;flex:1}
+#card h2{font:500 19px/1.28 var(--serif);margin:4px 0 6px}
+#card .meta{color:var(--muted);font-size:13.5px;margin:0 0 4px}
+#card .badges{margin:8px 0}
+.badge{display:inline-block;font-size:11.5px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;border-radius:4px;padding:2px 7px;margin-right:6px;background:var(--accent-soft);color:var(--accent-deep)}
+.badge.warn{background:#fdf1e3;color:#8a5a12}
+#card .sum{font-size:14.5px;line-height:1.5;margin:8px 0 2px}
+#card .caveat{color:var(--muted);font-size:12px;margin:0 0 10px}
+#card h4{font:600 12px var(--sans);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
+#card dl{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;margin:0;font-size:13.5px}
+#card dt{color:var(--muted)}
+#card dd{margin:0}
+#card .kw .chip{cursor:pointer}
+#card ul.nb{list-style:none;margin:0;padding:0;font-size:13.5px}
+#card ul.nb li{padding:4px 0;border-top:1px solid var(--line);cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+#card ul.nb li:hover{color:var(--accent)}
+#card ul.nb li .sw{margin-top:6px}
+#card .actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+#card .actions button{font-size:13px}
+
+/* ---------- list view ---------- */
+#list{position:absolute;inset:0;background:var(--ground);overflow:auto;padding:60px 18px 18px;display:none;z-index:12}
+#list.show{display:block}
+#list table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:8px;font-size:13.5px}
+#list th,#list td{padding:7px 10px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+#list th{font-weight:600;color:var(--muted);cursor:pointer;user-select:none;white-space:nowrap;position:sticky;top:0;background:#fff;z-index:1}
+#list th.on{color:var(--accent)}
+#list tr{cursor:pointer}
+#list tbody tr:hover{background:var(--accent-soft)}
+#list tr.sel{background:#e9f3f5}
+#list td.t{font-family:var(--serif);font-size:15px}
+#list .sw{display:inline-block;margin-right:6px;vertical-align:-1px}
+#list .mini{font-size:11px;font-weight:600;color:var(--accent-deep);background:var(--accent-soft);padding:1px 5px;border-radius:3px;margin-left:6px;vertical-align:1px}
+
+/* ---------- pages (Start here / About) ---------- */
+.page{position:absolute;inset:0;background:var(--ground);overflow:auto;display:none;z-index:13}
+.page.show{display:block}
+.page .inner{max-width:860px;margin:0 auto;padding:28px 22px 60px}
+.page h2{font:500 28px/1.2 var(--serif);margin:0 0 6px}
+.page h3{font:500 20px/1.3 var(--serif);margin:26px 0 8px}
+.page p,.page li{font-size:15.5px;line-height:1.55;max-width:70ch}
+.page .lead{color:var(--muted);font-size:16px;margin:0 0 18px}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin:14px 0}
+.ccard{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;border-top:4px solid var(--c)}
+.ccard h4{font:500 17px/1.25 var(--serif);margin:0 0 2px}
+.ccard .n{color:var(--muted);font-size:12.5px;margin-bottom:6px}
+.ccard .ph{color:var(--muted);font-size:12.5px;margin:0 0 8px;line-height:1.4}
+.ccard ol{margin:0;padding-left:18px;font-size:13.5px}
+.ccard ol li{margin:3px 0;cursor:pointer}
+.ccard ol li:hover{color:var(--accent)}
+.ccard .go{font-size:12.5px;margin-top:8px;display:inline-block}
+.brg-list{list-style:none;padding:0;margin:0}
+.brg-list li{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:14px;max-width:none}
+.brg-list li:hover{border-color:var(--accent)}
+.brg-list .t{font-family:var(--serif);font-size:16px}
+.brg-list .m{color:var(--muted);font-size:13px;margin-top:2px}
+.rev{cursor:default}
+.rev .s{font-size:14px;margin-top:6px;line-height:1.45}
+.rev .cv{color:var(--muted);font-size:12px;margin-top:2px}
+.rev .m a{margin-left:4px}
+dl.gloss{font-size:15px;max-width:70ch}
+dl.gloss dt{font-weight:600;margin-top:10px}
+dl.gloss dd{margin:2px 0 0}
+
+/* ---------- toast ---------- */
+#toast{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:7px 14px;border-radius:6px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:40}
+#toast.show{opacity:1}
+
+/* ---------- responsive ---------- */
+@media (max-width:900px){
+  :root{--card:auto}
+  #menuBtn{display:inline-block}
+  #app{grid-template-columns:1fr}
+  #rail{position:absolute;top:0;left:0;bottom:0;width:min(86vw,320px);z-index:25;transform:translateX(-100%);transition:transform .25s;box-shadow:0 0 30px rgba(0,0,0,.15)}
+  #rail.open{transform:none}
+  #card{left:8px;right:8px;top:auto;bottom:8px;max-height:62%;transform:translateY(20px)}
+  .legend{max-width:calc(100vw - 28px);font-size:12px}
+    header h1 small{display:none}
+  nav button{padding:6px 7px;font-size:13.5px}
+  #list{padding-top:58px}
+}
+</style>
+</head>
+<body>
+<header>
+  <button id="menuBtn" class="ghost" aria-label="Filters">&#9776;</button>
+  <h1>AI for Aphasia <small>a map of the research, 2010 to mid-2026</small></h1>
+  <nav aria-label="Sections">
+    <button data-page="map" class="on">Map</button>
+    <button data-page="start">Start here</button>
+    <button data-page="reviews">Reviews</button>
+    <button data-page="about">About</button>
+  </nav>
+</header>
+
+<div id="app">
+  <aside id="rail" aria-label="Search and filters">
+    <div class="rail-top"><span class="count"><b id="nShown">412</b> of 412 studies</span><button class="ghost" id="resetBtn" style="font-size:13px">Reset</button></div>
+    <input type="search" id="q" placeholder="Search titles, keywords, authors" aria-label="Search" autocomplete="off">
+    <div class="starts">
+      <h3>Starting points</h3>
+      <div id="starts"></div>
+    </div>
+    <div id="filters"></div>
+    <div class="rail-actions">
+      <button id="csvBtn" title="Download the studies now shown as a CSV file">Download CSV</button>
+      <button id="bibBtn" title="Download the studies now shown as BibTeX">BibTeX</button>
+    </div>
+    <p class="hint">Filters and the selected study are kept in the page address, so you can share a link to what you are looking at.</p>
+  </aside>
+
+  <main id="stage">
+    <div id="cy" role="img" aria-label="Network map of 412 studies"></div>
+    <div class="viewtoggle" role="tablist"><button id="vMap" class="on" role="tab">Map</button><button id="vList" role="tab">List</button></div>
+    <div class="zoom"><button id="zIn" title="Zoom in">+</button><button id="zOut" title="Zoom out">&minus;</button><button id="zFit" title="Fit to screen" style="font-size:13px">fit</button></div>
+    <div class="legend" id="legend"><h3>Research communities</h3><div class="rows"></div>
+      <div class="foot"><span><span class="hub"></span>hub</span><span><span class="brg"></span>bridge</span><span style="margin-left:auto">size = connections</span></div></div>
+    <div class="snap" id="snap"></div>
+    <div id="tip"></div>
+
+    <section id="card" aria-live="polite">
+      <div class="head"><span class="comm" id="cComm"></span><button class="close" id="cClose" aria-label="Close">&times;</button></div>
+      <div class="body" id="cBody"></div>
+    </section>
+
+    <section id="list" aria-label="Study list">
+      <table><thead><tr>
+        <th data-k="title">Title</th><th data-k="authors">Authors</th><th data-k="year">Year</th><th data-k="venue">Venue</th><th data-k="community">Community</th>
+      </tr></thead><tbody id="listBody"></tbody></table>
+    </section>
+
+    <section class="page" id="pStart"><div class="inner">
+      <h2>Start here</h2>
+      <p class="lead">Twelve research communities, each with its three most connected studies (hubs), and the ten studies that link communities most strongly (bridges). A hub is a natural first read for a community; a bridge shows where two lines of work already meet.</p>
+      <div class="cgrid" id="commGrid"></div>
+      <h3>Bridges between communities</h3>
+      <ul class="brg-list" id="bridgeList"></ul>
+    </div></section>
+
+    <section class="page" id="pReviews"><div class="inner">
+      <h2>Reviews and position papers</h2>
+      <p class="lead" id="revLead"></p>
+      <p>These articles met the topic criteria but are reviews, syntheses, or position papers rather than original studies, so they are not points on the map. They are listed here as background reading, newest first.</p>
+      <ul class="brg-list" id="revList"></ul>
+    </div></section>
+    <section class="page" id="pAbout"><div class="inner">
+      <h2>About this map</h2>
+      <p class="lead">A companion to a scoping review of artificial intelligence in aphasia research.</p>
+      <p>This map shows <b>412 peer-reviewed studies</b>, published between January 1, 2010 and June 30, 2026, in which a method that learns from data (machine learning, deep learning, natural language processing, automatic speech recognition, or generative AI) was applied to people with aphasia or to aphasic language. The studies were identified by a search of seven databases and archives run on July 27, 2026, screened and charted from their abstracts, and organized by the similarity of their abstracts into twelve research communities, each named from its own vocabulary.</p>
+      <h3>How to read it</h3>
+      <p>Each point is one study. Studies whose abstracts are similar sit close together and are joined by a line; colour shows the community a study belongs to. Larger points have more connections. Hubs (ringed) are the most connected studies in their community; bridges (diamonds) connect communities. Click a point to open the study, its neighbours, and a link to the publisher's page. Use the filters on the left to narrow the map by year, community, method, population, or what each abstract reports about how the work was evaluated.</p>
+      <h3>What each study shows</h3>
+      <p>Each study card gives the title, authors, year, venue, and DOI, taken from the publisher's record in Crossref; a short list of keywords drawn from the abstract; and the characteristics charted for the review, which describe what the abstract reports. The one-sentence summary, where shown, is Semantic Scholar's automatically generated TLDR. Abstracts are not reproduced here.</p>
+      <h3>Snapshot</h3>
+      <p>The map is a snapshot of the literature as of the search date, July 27, 2026. It is not updated as new studies appear. Positions and community boundaries are properties of this map; a study near a boundary could reasonably belong to either neighbour.</p>
+      <h3>Citing</h3>
+      <p id="citeArticle">Qiu, M. (2026). <i>[Article title]</i>. American Journal of Speech-Language Pathology. [DOI to follow.]</p>
+      <h3>Glossary</h3>
+      <dl class="gloss">
+        <dt>Aphasia</dt><dd>An acquired language disorder, most often after stroke; primary progressive aphasia (PPA) is a form that begins gradually with neurodegenerative disease.</dd>
+        <dt>Community</dt><dd>A group of studies whose abstracts are more similar to one another than to the rest of the map. Communities were found by a standard network method and named by reading the vocabulary that sets each group apart.</dd>
+        <dt>Hub</dt><dd>One of the three studies with the most connections inside its community.</dd>
+        <dt>Bridge</dt><dd>One of the ten studies that most often lie on the shortest paths between communities; they connect lines of research.</dd>
+        <dt>Classical machine learning</dt><dd>Methods such as support vector machines, random forests, and regression models that learn from hand-chosen features.</dd>
+        <dt>Deep learning</dt><dd>Neural networks with many layers that learn their own features from raw data such as speech or images.</dd>
+        <dt>Generative AI</dt><dd>Models, including large language models, that produce text, speech, or images rather than only classifying them.</dd>
+        <dt>Tested on independent data</dt><dd>The abstract reports evaluation on data that were not used to build the model, such as a held-out dataset or a different site.</dd>
+        <dt>Evaluated with people with aphasia</dt><dd>The abstract reports that people with aphasia used or were assessed with the tool, whether as a feasibility or usability study or as a clinical evaluation.</dd>
+      </dl>
+    </div></section>
+  </main>
+</div>
+<div id="toast"></div>
+
+<script src="vendor/cytoscape.min.js"></script>
+<script src="data.js"></script>
+<script>
+(function(){
+'use strict';
+const G = window.GRAPH;
+const COMM = Object.fromEntries(G.communities.map(c=>[c.id,c]));
+const NODE = Object.fromEntries(G.nodes.map(n=>[n.id,n]));
+const NB = {}; G.nodes.forEach(n=>NB[n.id]=[]);
+G.edges.forEach(e=>{NB[e.s].push({id:e.t,w:e.w});NB[e.t].push({id:e.s,w:e.w});});
+Object.values(NB).forEach(a=>a.sort((x,y)=>y.w-x.w));
+
+/* ---- vocabulary in the article's wording ---- */
+const LAB = {
+  ai_family:{_t:'AI method',classical_ml:'Classical machine learning',deep_learning:'Deep learning',generative_ai:'Generative AI',other_or_unnamed:'Other or unnamed'},
+  population:{_t:'Population',post_stroke_aphasia:'Post-stroke aphasia',ppa:'Primary progressive aphasia',both_stroke_and_ppa:'Both post-stroke and PPA',other_or_mixed:'Other or mixed',not_identified:'Not identified'},
+  venue_group:{_t:'Where it was published',clinical:'Clinical venue',computing:'Computing venue',multidisciplinary:'Multidisciplinary venue'},
+  provenance:{_t:'Where the data came from',newly_collected:'Newly collected',existing_dataset:'Existing dataset',both_new_and_existing:'Both new and existing',none_reported:'Not reported'},
+  model_evidence:{_t:'How the model was evaluated',independent:'Tested on independent data',internal:'Internal evaluation only',none:'No model evaluation reported'},
+  human_evidence:{_t:'Evaluated with people with aphasia',clinical_evaluation:'Clinical evaluation',feasibility_usability:'Feasibility or usability',none:'Not reported'},
+  severity_reported:{_t:'Severity reported',yes:'Yes',no:'No'},
+  time_post_onset_reported:{_t:'Time post-onset reported',yes:'Yes',no:'No'},
+};
+const FILTER_ORDER = ['community','year','ai_family','population','venue_group','provenance','model_evidence','human_evidence','severity_reported','time_post_onset_reported'];
+const SYN = [['asr','automatic speech recognition','speech recognition'],['llm','large language model','large language models'],['ppa','primary progressive aphasia'],['ml','machine learning'],['nlp','natural language processing'],['dl','deep learning'],['aac','augmentative and alternative communication'],['ftd','frontotemporal dementia'],['mri','magnetic resonance imaging']];
+
+/* ---- state ---- */
+const S = {q:'',sets:{},yr:[2010,2026],sel:null,view:'map',page:'map',sort:['year',-1]};
+FILTER_ORDER.forEach(k=>{ if(k!=='year') S.sets[k]=new Set(); });
+const YMIN=Math.min(...G.nodes.map(n=>n.year)), YMAX=Math.max(...G.nodes.map(n=>n.year));
+S.yr=[YMIN,YMAX];
+
+/* ---- helpers ---- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const authorsShort=a=>!a||!a.length?'':a.length===1?a[0]:a.length===2?a[0]+' & '+a[1]:a[0]+' et al.';
+const surname=n=>{const p=n.trim().split(/\s+/);return p[p.length-1];};
+function citation(n){
+  const au=n.authors.length?n.authors.map(a=>{const p=a.trim().split(/\s+/);const last=p.pop();return last+', '+p.map(x=>x[0]+'.').join(' ');}):[];
+  let A=au.length<=2?au.join(' & '):au.length<=20?au.slice(0,-1).join(', ')+', & '+au[au.length-1]:au.slice(0,19).join(', ')+', … '+au[au.length-1];
+  return `${A} (${n.year}). ${n.title}. ${n.venue}.${n.doi?' https://doi.org/'+n.doi:''}`;
+}
+function bibtex(n){
+  const key=(n.authors[0]?surname(n.authors[0]).toLowerCase().replace(/[^a-z]/g,''):'anon')+n.year+(n.id.slice(1,5));
+  return `@article{${key},\n  title={${n.title}},\n  author={${n.authors.join(' and ')}},\n  journal={${n.venue}},\n  year={${n.year}}${n.doi?`,\n  doi={${n.doi}}`:''}\n}`;
+}
+let toastT; function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1800);}
+function download(name,text,type){const b=new Blob([text],{type});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);}
+
+/* ---- search index ---- */
+const IDX={}; G.nodes.forEach(n=>{IDX[n.id]=[n.title,n.keywords.join(' '),n.authors.join(' '),n.venue,COMM[n.community].name].join(' ').toLowerCase();});
+function expandQuery(q){
+  let terms=q.toLowerCase().trim().split(/\s+/).filter(Boolean);
+  return terms.map(t=>{const g=SYN.find(s=>s.includes(t));return g?g:[t];});
+}
+function matchesQ(id,groups){const s=IDX[id];return groups.every(g=>g.some(t=>s.includes(t)));}
+
+/* ---- filtering ---- */
+function passes(n,qg){
+  if(qg.length&&!matchesQ(n.id,qg))return false;
+  if(n.year<S.yr[0]||n.year>S.yr[1])return false;
+  for(const k in S.sets){const st=S.sets[k];if(st.size&&!st.has(String(n[k])))return false;}
+  return true;
+}
+let shown=new Set();
+function applyFilters(){
+  const qg=expandQuery(S.q);
+  shown=new Set(G.nodes.filter(n=>passes(n,qg)).map(n=>n.id));
+  $('#nShown').textContent=shown.size;
+  cy.batch(()=>{cy.nodes().forEach(el=>{el.toggleClass('dim',!shown.has(el.id()));});
+    cy.edges().forEach(el=>{el.toggleClass('dim',!(shown.has(el.source().id())&&shown.has(el.target().id())));});});
+  updateHighlight();
+  renderFilterCounts(); renderLegend(); if(S.view==='list')renderList(); writeURL();
+}
+
+/* ---- rail: filters ---- */
+function buildFilters(){
+  const wrap=$('#filters'); wrap.innerHTML='';
+  FILTER_ORDER.forEach((k,i)=>{
+    const d=document.createElement('details'); if(i<1)d.open=true;
+    const title=k==='community'?'Research community':k==='year'?'Year':LAB[k]._t;
+    d.innerHTML=`<summary>${title}<span class="n" data-n="${k}"></span></summary>`;
+    const fs=document.createElement('fieldset');
+    if(k==='year'){
+      fs.innerHTML=`<div class="yr"><input type="number" id="y0" min="${YMIN}" max="${YMAX}" value="${YMIN}" aria-label="From year"> to <input type="number" id="y1" min="${YMIN}" max="${YMAX}" value="${YMAX}" aria-label="To year"></div>`;
+    } else {
+      const vals=k==='community'?G.communities.map(c=>String(c.id)):Object.keys(LAB[k]).filter(x=>x!=='_t');
+      vals.forEach(v=>{
+        const name=k==='community'?COMM[+v].name:LAB[k][v];
+        const sw=k==='community'?`<span class="sw" style="background:${COMM[+v].color}"></span>`:'';
+        fs.insertAdjacentHTML('beforeend',`<label class="opt"><input type="checkbox" data-k="${k}" value="${v}">${sw}<span>${esc(name)}</span><span class="c" data-c="${k}:${v}"></span></label>`);
+      });
+    }
+    d.appendChild(fs); wrap.appendChild(d);
+  });
+  wrap.addEventListener('change',e=>{
+    const t=e.target;
+    if(t.id==='y0'||t.id==='y1'){S.yr=[+$('#y0').value||YMIN,+$('#y1').value||YMAX];if(S.yr[0]>S.yr[1])S.yr.reverse();applyFilters();return;}
+    if(t.dataset.k){const st=S.sets[t.dataset.k];t.checked?st.add(t.value):st.delete(t.value);applyFilters();}
+  });
+}
+function renderFilterCounts(){
+  // counts: how many of the currently shown studies carry each value (community counts ignore the community filter itself)
+  const qg=expandQuery(S.q);
+  document.querySelectorAll('[data-c]').forEach(el=>{
+    const [k,v]=el.dataset.c.split(':');
+    let c=0; G.nodes.forEach(n=>{ if(String(n[k])!==v)return;
+      // count against all other filters
+      const saved=S.sets[k]; S.sets[k]=new Set(); const ok=passes(n,qg); S.sets[k]=saved; if(ok)c++; });
+    el.textContent=c;
+  });
+  document.querySelectorAll('[data-n]').forEach(el=>{const k=el.dataset.n; if(k==='year'){el.textContent=(S.yr[0]!==YMIN||S.yr[1]!==YMAX)?`${S.yr[0]}–${S.yr[1]}`:'';} else {el.textContent=S.sets[k].size?S.sets[k].size+' selected':'';}});
+  document.querySelectorAll('#filters input[type=checkbox]').forEach(cb=>{cb.checked=S.sets[cb.dataset.k].has(cb.value);});
+  $('#y0').value=S.yr[0];$('#y1').value=S.yr[1];
+}
+function buildStarts(){
+  const el=$('#starts');
+  const items=[['Tested on independent data',{model_evidence:'independent'}],['Evaluated with people with aphasia',{human_evidence:['clinical_evaluation','feasibility_usability']}],['Generative AI',{ai_family:'generative_ai'}],['Primary progressive aphasia',{population:'ppa'}],['Published in 2025–2026',{year:[2025,2026]}]];
+  el.innerHTML=items.map((it,i)=>`<span class="chip" data-i="${i}">${it[0]}</span>`).join('');
+  el.addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;const [,f]=items[+c.dataset.i];resetState(false);
+    for(const k in f){ if(k==='year'){S.yr=f[k];} else {[].concat(f[k]).forEach(v=>S.sets[k].add(v));} }
+    applyFilters(); showPage('map');});
+}
+function resetState(apply=true){S.q='';$('#q').value='';for(const k in S.sets)S.sets[k].clear();S.yr=[YMIN,YMAX];if(apply)applyFilters();}
+
+/* ---- legend ---- */
+function renderLegend(){
+  const rows=$('#legend .rows'); const sel=S.sets.community;
+  rows.innerHTML=G.communities.map(c=>{const n=[...shown].filter(id=>NODE[id].community===c.id).length;
+    return `<div class="row ${sel.size&&!sel.has(String(c.id))?'off':''}" data-c="${c.id}"><span class="sw" style="background:${c.color}"></span><span>${esc(c.name)}</span><span class="n">${n}</span></div>`;}).join('');
+}
+$('#legend').addEventListener('click',e=>{
+  const r=e.target.closest('.row'); if(!r){ if(e.target.tagName==='H3')$('#legend').classList.toggle('min'); return; }
+  const id=r.dataset.c, st=S.sets.community;
+  if(st.size===1&&st.has(id)) st.clear(); else { st.clear(); st.add(id); }
+  applyFilters();
+});
+
+/* ---- cytoscape ---- */
+const CX=(Math.min(...G.nodes.map(n=>n.x))+Math.max(...G.nodes.map(n=>n.x)))/2, CYc=(Math.min(...G.nodes.map(n=>n.y))+Math.max(...G.nodes.map(n=>n.y)))/2;
+let fitZ=1;
+const cy=cytoscape({
+  container:$('#cy'), wheelSensitivity:0.25, minZoom:0.15, maxZoom:6, boxSelectionEnabled:false, autounselectify:true,
+  elements:[
+    ...G.nodes.map(n=>({data:{id:n.id,label:n.title,c:n.community,deg:n.degree,hub:n.hub,bridge:n.bridge,color:COMM[n.community].color},position:{x:CX+(n.x-CX)*0.55,y:CYc+(n.y-CYc)*0.55}})),
+    ...G.edges.map((e,i)=>({data:{id:'e'+i,source:e.s,target:e.t,w:e.w}}))
+  ],
+  layout:{name:'preset'},
+  style:[
+    {selector:'node',style:{'background-color':'data(color)','width':'mapData(deg,3,25,9,26)','height':'mapData(deg,3,25,9,26)','border-width':0,'label':'','transition-property':'opacity,border-width,width,height','transition-duration':'220ms','opacity':1}},
+    {selector:'node[?hub]',style:{'border-width':2.5,'border-color':'#ffffff','border-opacity':1,'shadow-blur':0,'underlay-color':'data(color)','underlay-opacity':0.28,'underlay-padding':6,'underlay-shape':'ellipse'}},
+    {selector:'node[?bridge]',style:{'shape':'diamond','width':'mapData(deg,3,25,13,30)','height':'mapData(deg,3,25,13,30)','border-width':2,'border-color':'#ffffff'}},
+    {selector:'edge',style:{'width':'mapData(w,0.45,0.97,0.6,2.2)','line-color':'#b9c6d6','opacity':0.55,'curve-style':'haystack','haystack-radius':0,'transition-property':'opacity','transition-duration':'220ms'}},
+    {selector:'.dim',style:{'opacity':0.07}},
+    {selector:'edge.dim',style:{'opacity':0.03}},
+    {selector:'node.hover',style:{'border-width':3,'border-color':'#152238','border-opacity':0.9}},
+    {selector:'node.focus',style:{'border-width':3.5,'border-color':'#152238','z-index':10}},
+    {selector:'node.nbr',style:{'border-width':2,'border-color':'#152238','border-opacity':0.6,'z-index':9}},
+    {selector:'edge.nbr',style:{'line-color':'#152238','opacity':0.8,'width':2.2,'z-index':8}},
+    {selector:'.fade',style:{'opacity':0.12}},
+    {selector:'edge.fade',style:{'opacity':0.04}},
+  ]
+});
+// settle-in: animate from the compressed start to the true positions
+cy.ready(()=>{
+  fitView(false);
+  cy.nodes().forEach(el=>{const n=NODE[el.id()];el.animate({position:{x:n.x,y:n.y}},{duration:900,easing:'ease-out-cubic'});});
+  setTimeout(()=>fitView(true),750);
+});
+$('#zIn').onclick=()=>cy.animate({zoom:cy.zoom()*1.4,center:{eles:cy.elements()}} ,{duration:200});
+$('#zOut').onclick=()=>cy.animate({zoom:cy.zoom()/1.4},{duration:200});
+function fitView(anim=true){const r=$('#stage').getBoundingClientRect();const right=$('#card').classList.contains('open')&&r.width>900?400:60;
+  const bb=cy.elements().boundingBox();const w=r.width-60-right,h=r.height-70-(r.width>900?150:40);
+  const z=Math.min(w/bb.w,h/bb.h,3);const pan={x:60+(w-bb.w*z)/2-bb.x1*z,y:20+(h-bb.h*z)/2-bb.y1*z};
+  fitZ=z; anim?cy.animate({zoom:z,pan},{duration:450,easing:'ease-in-out-cubic'}):cy.viewport({zoom:z,pan});}
+$('#zFit').onclick=()=>fitView();
+window.addEventListener('resize',()=>fitView(false));
+
+/* tooltip */
+const tip=$('#tip');
+cy.on('mouseover','node',e=>{const n=NODE[e.target.id()];e.target.addClass('hover');
+  tip.innerHTML=`${esc(n.title)}<span class="m">${esc(authorsShort(n.authors))}, ${n.year} · ${esc(COMM[n.community].name)}${n.hub?' · hub':''}${n.bridge?' · bridge':''}</span>`;tip.style.display='block';});
+cy.on('mousemove','node',e=>{const p=e.renderedPosition||e.position;const r=$('#stage').getBoundingClientRect();let x=p.x+16,y=p.y+12;if(x+310>r.width)x=p.x-316;if(y+80>r.height)y=p.y-70;tip.style.left=x+'px';tip.style.top=y+'px';});
+cy.on('mouseout','node',e=>{e.target.removeClass('hover');tip.style.display='none';});
+cy.on('tap','node',e=>{select(e.target.id(),false);});
+cy.on('tap',e=>{if(e.target===cy)select(null);});
+
+/* highlight */
+function updateHighlight(){
+  cy.batch(()=>{cy.elements().removeClass('focus nbr fade');
+    if(!S.sel)return; const el=cy.getElementById(S.sel); if(el.empty())return;
+    const hood=el.closedNeighborhood();
+    cy.elements().not(hood).addClass('fade'); hood.nodes().not(el).addClass('nbr'); hood.edges().addClass('nbr'); el.addClass('focus');});
+}
+
+/* ---- selection & card ---- */
+function select(id,fly=true){
+  S.sel=id; updateHighlight(); writeURL();
+  const card=$('#card');
+  if(!id){card.classList.remove('open');document.querySelectorAll('#list tr.sel').forEach(r=>r.classList.remove('sel'));return;}
+  const n=NODE[id], c=COMM[n.community];
+  $('#cComm').innerHTML=`<span class="sw" style="background:${c.color}"></span>${esc(c.name)}`;
+  const nbrs=NB[id].slice(0,8);
+  $('#cBody').innerHTML=`
+    <h2>${esc(n.title)}</h2>
+    <p class="meta">${esc(n.authors.join(', '))}</p>
+    <p class="meta">${esc(n.venue)}, ${n.year}${n.doi?` · <a href="https://doi.org/${esc(n.doi)}" target="_blank" rel="noopener">doi:${esc(n.doi)}</a>`:''}</p>
+    <div class="badges">${n.hub?'<span class="badge">Start here · hub</span>':''}${n.bridge?`<span class="badge">Start here · bridge</span>`:''}${n.bridge&&n.links.length?`<span class="meta" style="font-size:12.5px">links to ${n.links.map(i=>esc(COMM[i].name)).join(', ')}</span>`:''}</div>
+    ${n.tldr?`<p class="sum">${esc(n.tldr)}</p><p class="caveat">One-sentence summary generated automatically by Semantic Scholar; not checked by us.</p>`:''}
+    ${n.keywords.length?`<h4>Keywords</h4><div class="kw">${n.keywords.slice(0,8).map(k=>`<span class="chip" data-q="${esc(k)}">${esc(k)}</span>`).join('')}</div>`:''}
+    <h4>What the abstract reports</h4>
+    <dl>
+      <dt>AI method</dt><dd>${LAB.ai_family[n.ai_family]}</dd>
+      <dt>Population</dt><dd>${LAB.population[n.population]}${n.n_pwa!=null?` (${n.n_pwa} with aphasia)`:''}</dd>
+      <dt>Where the data came from</dt><dd>${LAB.provenance[n.provenance]}</dd>
+      <dt>Model evaluation</dt><dd>${LAB.model_evidence[n.model_evidence]}</dd>
+      <dt>Evaluated with people with aphasia</dt><dd>${LAB.human_evidence[n.human_evidence]}</dd>
+      <dt>Severity reported</dt><dd>${LAB.severity_reported[n.severity_reported]}</dd>
+      <dt>Time post-onset reported</dt><dd>${LAB.time_post_onset_reported[n.time_post_onset_reported]}</dd>
+      <dt>Published in</dt><dd>${LAB.venue_group[n.venue_group]||'—'}</dd>
+    </dl>
+    <h4>Most similar studies (${NB[id].length} connections)</h4>
+    <ul class="nb">${nbrs.map(x=>{const m=NODE[x.id];return `<li data-id="${m.id}"><span class="sw" style="background:${COMM[m.community].color}"></span><span>${esc(m.title)} <span style="color:var(--muted)">(${m.year})</span></span></li>`;}).join('')}</ul>
+    <div class="actions"><button data-act="cite">Copy citation</button><button data-act="bib">Copy BibTeX</button><button data-act="link">Copy link</button></div>`;
+  card.classList.add('open'); $('#cBody').scrollTop=0;
+  if(fly){ const el=cy.getElementById(id); const r=$('#stage').getBoundingClientRect(); const z=Math.min(Math.max(cy.zoom(),fitZ*2.2),fitZ*3); const p=el.position();
+    const cx=(r.width-(r.width>900?400:0))/2, cyy=r.height/2-(r.width>900?0:r.height*0.2);
+    cy.animate({zoom:z,pan:{x:cx-p.x*z,y:cyy-p.y*z}},{duration:550,easing:'ease-in-out-cubic'}); }
+  document.querySelectorAll('#list tr').forEach(r=>r.classList.toggle('sel',r.dataset.id===id));
+}
+$('#cClose').onclick=()=>select(null);
+$('#cBody').addEventListener('click',e=>{
+  const li=e.target.closest('li[data-id]'); if(li){select(li.dataset.id);return;}
+  const ch=e.target.closest('.chip[data-q]'); if(ch){S.q=ch.dataset.q;$('#q').value=S.q;applyFilters();return;}
+  const b=e.target.closest('button[data-act]'); if(!b)return; const n=NODE[S.sel];
+  const txt=b.dataset.act==='cite'?citation(n):b.dataset.act==='bib'?bibtex(n):location.href;
+  navigator.clipboard.writeText(txt).then(()=>toast('Copied'),()=>toast('Could not copy'));
+});
+
+/* ---- list view ---- */
+function renderList(){
+  const [k,dir]=S.sort; const rows=[...shown].map(id=>NODE[id]);
+  const key=n=>k==='authors'?(n.authors[0]?surname(n.authors[0]).toLowerCase():'zzz'):k==='community'?COMM[n.community].name:k==='title'?n.title.toLowerCase():n[k];
+  rows.sort((a,b)=>{const x=key(a),y=key(b);return (x<y?-1:x>y?1:0)*dir||(b.year-a.year);});
+  $('#listBody').innerHTML=rows.map(n=>`<tr data-id="${n.id}" class="${n.id===S.sel?'sel':''}"><td class="t">${esc(n.title)}${n.hub||n.bridge?`<span class="mini">${n.hub?'hub':'bridge'}</span>`:''}</td><td>${esc(authorsShort(n.authors))}</td><td>${n.year}</td><td>${esc(n.venue)}</td><td><span class="sw" style="background:${COMM[n.community].color}"></span>${esc(COMM[n.community].name)}</td></tr>`).join('');
+  document.querySelectorAll('#list th').forEach(th=>{th.classList.toggle('on',th.dataset.k===k);th.textContent=th.textContent.replace(/[ ▲▼]+$/,'')+(th.dataset.k===k?(dir>0?' ▲':' ▼'):'');});
+}
+$('#list thead').addEventListener('click',e=>{const th=e.target.closest('th');if(!th)return;S.sort=[th.dataset.k,S.sort[0]===th.dataset.k?-S.sort[1]:(th.dataset.k==='year'?-1:1)];renderList();});
+$('#listBody').addEventListener('click',e=>{const tr=e.target.closest('tr');if(!tr)return;setView('map');select(tr.dataset.id);});
+function setView(v){S.view=v;$('#vMap').classList.toggle('on',v==='map');$('#vList').classList.toggle('on',v==='list');$('#list').classList.toggle('show',v==='list');if(v==='list')renderList();writeURL();}
+$('#vMap').onclick=()=>setView('map'); $('#vList').onclick=()=>setView('list');
+
+/* ---- pages ---- */
+function showPage(p){S.page=p;document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.page===p));
+  $('#pStart').classList.toggle('show',p==='start');$('#pReviews').classList.toggle('show',p==='reviews');$('#pAbout').classList.toggle('show',p==='about');writeURL();}
+document.querySelector('nav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)showPage(b.dataset.page);});
+function buildStart(){
+  $('#commGrid').innerHTML=G.communities.map(c=>{const hubs=G.nodes.filter(n=>n.community===c.id&&n.hub).sort((a,b)=>b.degree-a.degree);
+    return `<div class="ccard" style="--c:${c.color}"><h4>${esc(c.name)}</h4><div class="n">${c.size} studies</div><p class="ph">${esc(c.phrases.slice(0,6).join(' · '))}</p><ol>${hubs.map(h=>`<li data-id="${h.id}">${esc(h.title)} (${h.year})</li>`).join('')}</ol><a class="go" href="#" data-comm="${c.id}">Show this community on the map →</a></div>`;}).join('');
+  const br=G.nodes.filter(n=>n.bridge).sort((a,b)=>b.betweenness-a.betweenness);
+  $('#bridgeList').innerHTML=br.map(n=>`<li data-id="${n.id}"><div class="t">${esc(n.title)}</div><div class="m"><span class="sw" style="background:${COMM[n.community].color};display:inline-block;vertical-align:-1px;margin-right:5px"></span>${esc(COMM[n.community].name)} → ${n.links.map(i=>esc(COMM[i].name)).join(', ')} · ${esc(authorsShort(n.authors))}, ${n.year}</div></li>`).join('');
+  $('#pStart').addEventListener('click',e=>{
+    const a=e.target.closest('a[data-comm]'); if(a){e.preventDefault();resetState(false);S.sets.community.add(a.dataset.comm);applyFilters();showPage('map');return;}
+    const li=e.target.closest('li[data-id]'); if(li){showPage('map');setView('map');select(li.dataset.id);}
+  });
+}
+
+function buildReviews(){
+  const R=G.reviews||[]; const nt=R.filter(r=>r.tldr).length;
+  $('#revLead').textContent=`${R.length} review articles retained as context for the map${nt?` (${nt} with a one-sentence summary from Semantic Scholar)`:''}.`;
+  $('#revList').innerHTML=R.map(r=>`<li class="rev"><div class="t">${esc(r.title)}</div><div class="m">${esc(r.authors.join(', '))}</div><div class="m">${esc(r.venue)}, ${r.year}${r.doi?` · <a href="https://doi.org/${esc(r.doi)}" target="_blank" rel="noopener">doi:${esc(r.doi)}</a>`:''}</div>${r.tldr?`<div class="s">${esc(r.tldr)}</div><div class="cv">One-sentence summary generated automatically by Semantic Scholar; not checked by us.</div>`:''}</li>`).join('');
+}
+
+/* ---- URL state ---- */
+let urlLock=false;
+function writeURL(){ if(urlLock)return; const p=new URLSearchParams();
+  if(S.q)p.set('q',S.q); if(S.yr[0]!==YMIN||S.yr[1]!==YMAX)p.set('y',S.yr.join('-'));
+  for(const k in S.sets){ if(S.sets[k].size)p.set(k==='community'?'c':k,[...S.sets[k]].join(',')); }
+  if(S.sel)p.set('s',S.sel); if(S.view==='list')p.set('v','list'); if(S.page!=='map')p.set('p',S.page);
+  const h=p.toString(); history.replaceState(null,'',h?'#'+h:location.pathname+location.search); }
+function readURL(h){ const p=new URLSearchParams((h||location.hash).slice(1)); if(![...p.keys()].length)return;
+  urlLock=true; S.q=p.get('q')||''; $('#q').value=S.q;
+  if(p.get('y')){const [a,b]=p.get('y').split('-').map(Number);if(a&&b)S.yr=[a,b];}
+  for(const k in S.sets){const v=p.get(k==='community'?'c':k);S.sets[k]=new Set(v?v.split(','):[]);}
+  applyFilters(); if(p.get('v')==='list')setView('list'); if(p.get('p'))showPage(p.get('p'));
+  urlLock=false; if(p.get('s')&&NODE[p.get('s')])setTimeout(()=>select(p.get('s')),1200); writeURL(); }
+
+/* ---- misc wiring ---- */
+let qT; $('#q').addEventListener('input',e=>{clearTimeout(qT);qT=setTimeout(()=>{S.q=e.target.value;applyFilters();},160);});
+$('#resetBtn').onclick=()=>resetState();
+$('#csvBtn').onclick=()=>{const cols=['title','authors','year','venue','doi','community','hub','bridge','ai_family','population','provenance','model_evidence','human_evidence','severity_reported','time_post_onset_reported','n_pwa','keywords'];
+  const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const lines=[cols.join(',')].concat([...shown].map(id=>{const n=NODE[id];return cols.map(c=>q(c==='authors'?n.authors.join('; '):c==='keywords'?n.keywords.join('; '):c==='community'?COMM[n.community].name:n[c])).join(',');}));
+  download('ai-aphasia-studies.csv',lines.join('\n'),'text/csv');toast(`${shown.size} studies exported`);};
+$('#bibBtn').onclick=()=>{download('ai-aphasia-studies.bib',[...shown].map(id=>bibtex(NODE[id])).join('\n\n'),'text/plain');toast(`${shown.size} entries exported`);};
+$('#menuBtn').onclick=()=>$('#rail').classList.toggle('open');
+$('#stage').addEventListener('pointerdown',()=>{if(window.innerWidth<=900)$('#rail').classList.remove('open');});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){select(null);showPage('map');}});
+$('#snap').textContent=`${G.meta.n_studies} studies · search run July 27, 2026 · ${G.meta.window}`;
+
+/* ---- init ---- */
+const initialHash=location.hash; buildFilters(); buildStarts(); buildStart(); buildReviews(); applyFilters(); readURL(initialHash);
+})();
+</script>
+</body>
+</html>
